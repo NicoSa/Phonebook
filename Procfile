@@ -1,2 +1,2 @@
-web: bundle exec ruby blog.rb -p 5000
+web: bundle exec ruby blog.rb -p $PORT
 
