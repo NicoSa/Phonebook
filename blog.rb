@@ -11,6 +11,11 @@ get '/kunde/' do
 	"Hallo, Herr #{telefonbuch[vorname]} \n"
 end
 
+
+get '/test/' do
+	"Dies ist ein Test\n"
+end
+
 post '/kunde/' do
      vorname = params[:vorname]
      nachname = params[:nachname]
