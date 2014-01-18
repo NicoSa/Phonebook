@@ -17,8 +17,8 @@ end
 
 get '/new' do
 	'<form method="post" action="new">
-		<input name="vorname" type="text" placeholder="Vorname"></input><br>
-		<input name="nachname" type="text" placeholder="Nachname"></input>
+		<input name="vorname" type="text" placeholder="First name"></input><br>
+		<input name="nachname" type="text" placeholder="Last name"></input>
 		<button>Save</button>
 	</form>'
 end
