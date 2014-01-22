@@ -3,6 +3,8 @@ require 'sinatra'
 require 'mongo'
 require 'bson'
 
+$stdout.sync = true #is for output with foreman start
+
 db = Mongo::Connection.from_uri("mongodb://dev:penis@dharma.mongohq.com:10099/test1")['test1']
 
 #.new['test']
@@ -10,7 +12,7 @@ db = Mongo::Connection.from_uri("mongodb://dev:penis@dharma.mongohq.com:10099/te
 
 get '/' do
 	telefonbuch = db['namen'].find()
-	result = telefonbuch.map{|document| "#{document['nachname']}, #{document['vorname']} <a href='delete?id=#{document['_id']}'>Delete</a>"}.join("<br>")
+	result = telefonbuch.map{|document| "#{document['nachname']}, #{document['vorname']} <a href='delete?id=#{document['_id']}'>Delete</a> <a href='update?id=#{document['_id']}'>Update</a>"}.join("<br>")
 	result += '<br><a href="new">New</a>'
 	result
 end
@@ -39,12 +41,38 @@ get '/delete' do
 end
 
 get '/update' do
-
-
+	id = params[:id]
+	persons = db['namen'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
+	person = persons[0]
+	puts "#{persons}"
+	puts "#{person}"
+	vorname = person["vorname"]
+	nachname = person["nachname"]
+	puts "#{vorname}"
+	puts "#{nachname}"
+	 %{<form method="post" action="update">
+		<input name="vorname" type="text" placeholder="First name" value="#{vorname}"></input><br>
+		<input name="nachname" type="text" placeholder="Last name" value="#{nachname}"></input><br>
+		<input type="hidden" name="id" value="#{id}">
+		<button>Save</button>
+	</form>}
 
 end
 
+post '/update' do
+	print params 
+	id = params[:id]
+	vorname = params[:vorname]
+	nachname = params[:nachname]
+	persons = db['namen'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
+	person = persons[0]
+	person["vorname"] = vorname
+	person["nachname"] = nachname
+	db['namen'].update({"_id" => person["_id"]}, person)
+     "#{nachname}, #{vorname} wurde UP ge dateEEED! <a href='new'>New</a> <a href='/'>All</a> "
 
+	#db['namen'].update({"_id"=> BSON::ObjectId.from_string(id)},{"$set" =>{"vorname"=> vorname, "nachname"=> nachname}})
+end
 
 
 
