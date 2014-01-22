@@ -9,6 +9,7 @@ db = Mongo::Connection.from_uri("mongodb://dev:penis@dharma.mongohq.com:10099/te
 
 #.new['test']
 
+Phonebook without numbers
 
 get '/' do
 	telefonbuch = db['namen'].find()
