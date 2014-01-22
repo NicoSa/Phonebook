@@ -74,5 +74,6 @@ post '/update' do
 	#db['namen'].update({"_id"=> BSON::ObjectId.from_string(id)},{"$set" =>{"vorname"=> vorname, "nachname"=> nachname}})
 end
 
+#lalala test
 
 
