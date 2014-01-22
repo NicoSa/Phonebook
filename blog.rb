@@ -69,7 +69,7 @@ post '/update' do
 	person["vorname"] = vorname
 	person["nachname"] = nachname
 	db['namen'].update({"_id" => person["_id"]}, person)
-     "#{nachname}, #{vorname} wurde UP ge dateEEED! <a href='new'>New</a> <a href='/'>All</a> "
+     "#{nachname}, #{vorname} has been updated! <a href='new'>New</a> <a href='/'>All</a> "
 
 	#db['namen'].update({"_id"=> BSON::ObjectId.from_string(id)},{"$set" =>{"vorname"=> vorname, "nachname"=> nachname}})
 end
