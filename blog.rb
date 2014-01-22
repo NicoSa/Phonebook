@@ -9,9 +9,9 @@ db = Mongo::Connection.from_uri("mongodb://dev:penis@dharma.mongohq.com:10099/te
 
 #.new['test']
 
-Phonebook without numbers
 
 get '/' do
+	"Phonebook without numbers"
 	telefonbuch = db['namen'].find()
 	result = telefonbuch.map{|document| "#{document['nachname']}, #{document['vorname']} <a href='delete?id=#{document['_id']}'>Delete</a> <a href='update?id=#{document['_id']}'>Update</a>"}.join("<br>")
 	result += '<br><a href="new">New</a>'
