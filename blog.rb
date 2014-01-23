@@ -3,7 +3,7 @@ require 'sinatra'
 require 'mongo'
 require 'bson'
 
-$stdout.sync = true #is for output with foreman start
+$stdout.sync = true #is for output in the console using foreman start
 
 db = Mongo::Connection.from_uri("mongodb://dev:penis@dharma.mongohq.com:10099/test1")['test1']
 
