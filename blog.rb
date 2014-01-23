@@ -57,7 +57,6 @@ get '/update' do
 	#takes in ID
 	id = params[:id]
 	persons = db['namen'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
-	puts "#{persons}"s
 	person = persons[0]
 	puts "#{persons}"
 	puts "#{person}"
