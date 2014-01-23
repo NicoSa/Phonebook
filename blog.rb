@@ -31,22 +31,30 @@ get '/new' do
 	</form>'
 end
 
+#Adds new user to database and confirms it
 post '/new' do
+#set key-value pairs
      vorname = params[:vorname]
      nachname = params[:nachname]
+     #feed collection namen inside database with the values passed from get '/new'
      db['namen'].insert({:vorname=> vorname, :nachname=> nachname})
+     #confirm adding and provide links to get '/' and get '/new'
      "#{nachname}, #{vorname} have been added! <a href='new'>New</a> <a href='/'>All</a> "
 end
 
+#Delete user from database
 get '/delete' do
-    
-     id = params[:id]
+    #gets id to delete from get '/'
+    id = params[:id]
+    #removes entry with that id from database
 	db['namen'].remove({:_id=> BSON::ObjectId.from_string(id)})
+	#confirms removal and provides links to get '/new' and get '/'
      "#{id} wurde gelöscht! <a href='new'>New</a> <a href='/'>All</a> "
-
 end
 
+#Update a user
 get '/update' do
+	#takes in ID
 	id = params[:id]
 	persons = db['namen'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
 	person = persons[0]
