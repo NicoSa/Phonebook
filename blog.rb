@@ -7,12 +7,11 @@ $stdout.sync = true #is for output in the console using foreman start
 
 db = Mongo::Connection.from_uri("mongodb://dev:penis@dharma.mongohq.com:10099/test1")['test1']
 
-#.new['test']
-
-
+#lists all the names in the collection 'namen' with a delete and a update link in our MongoHQ Database
 get '/' do
-	
-	telefonbuch = db['namen'].find()
+	#reads records for collection 'namen' sets it equal to telefonbuch
+	telefonbuch = db['namen'].find().to_a
+
 	result = telefonbuch.map{|document| "#{document['nachname']}, #{document['vorname']} <a href='delete?id=#{document['_id']}'>Delete</a> <a href='update?id=#{document['_id']}'>Update</a>"}.join("<br>")
 	result += '<br><a href="new">New</a>'
 	result
@@ -72,7 +71,6 @@ post '/update' do
 	db['namen'].update({"_id" => person["_id"]}, person)
      "#{nachname}, #{vorname} has been updated! <a href='new'>New</a> <a href='/'>All</a> "
 
-	#db['namen'].update({"_id"=> BSON::ObjectId.from_string(id)},{"$set" =>{"vorname"=> vorname, "nachname"=> nachname}})
 end
 
 
