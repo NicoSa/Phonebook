@@ -66,10 +66,9 @@ get '/update' do
 	nachname = person["nachname"]
 	puts "#{vorname}"
 	puts "#{nachname}"
-	 %{<form method="post" action="update">
+	 %{<form method="post" action="update?id=#{id}">
 		<input name="vorname" type="text" placeholder="First name" value="#{vorname}"></input><br>
 		<input name="nachname" type="text" placeholder="Last name" value="#{nachname}"></input><br>
-		<input name="id" type="hidden" value="#{id}">
 		<button>Save</button>
 	</form>}
 
@@ -89,9 +88,6 @@ post '/update' do
 
 end
 
-=begingget '/feuerwerk' do
-	print params
-	"Hello World"
-=end
+
 
 
