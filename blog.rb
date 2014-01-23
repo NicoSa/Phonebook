@@ -7,7 +7,8 @@ require 'bson'
 $stdout.sync = true 
 
 #Connects us to Database hosted on mongohq
-db = Mongo::Connection.from_uri("mongodb://dev:penis@dharma.mongohq.com:10099/test1")['test1']
+connection = Mongo::Connection.from_uri("mongodb://dev:penis@dharma.mongohq.com:10099/test1")
+db = connection['test1']
 
 #List all users in collection 'namen' + delete & update link 
 get '/' do
@@ -36,6 +37,7 @@ post '/new' do
 #set key-value pairs
      vorname = params[:vorname]
      nachname = params[:nachname]
+     puts "#{params}"
      #feed collection namen inside database with the values passed from get '/new'
      db['namen'].insert({:vorname=> vorname, :nachname=> nachname})
      #confirm adding and provide links to get '/' and get '/new'
@@ -67,7 +69,7 @@ get '/update' do
 	 %{<form method="post" action="update">
 		<input name="vorname" type="text" placeholder="First name" value="#{vorname}"></input><br>
 		<input name="nachname" type="text" placeholder="Last name" value="#{nachname}"></input><br>
-		<input type="hidden" name="id" value="#{id}">
+		<input name="id" type="hidden" value="#{id}">
 		<button>Save</button>
 	</form>}
 
@@ -82,11 +84,14 @@ post '/update' do
 	person = persons[0]
 	person["vorname"] = vorname
 	person["nachname"] = nachname
-	db['namen'].update({"_id" => person["_id"]}, person)
+	db['namen'].save(person)
      "#{nachname}, #{vorname} has been updated! <a href='new'>New</a> <a href='/'>All</a> "
 
 end
 
-
+=begingget '/feuerwerk' do
+	print params
+	"Hello World"
+=end
 
 
