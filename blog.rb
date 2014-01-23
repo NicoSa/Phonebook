@@ -3,21 +3,27 @@ require 'sinatra'
 require 'mongo'
 require 'bson'
 
-$stdout.sync = true #is for output in the console using foreman start
+#is for output in the console using foreman start
+$stdout.sync = true 
 
+#Connects us to Database hosted on mongohq
 db = Mongo::Connection.from_uri("mongodb://dev:penis@dharma.mongohq.com:10099/test1")['test1']
 
-#lists all the names in the collection 'namen' with a delete and a update link in our MongoHQ Database
+#List all users in collection 'namen' + delete & update link 
 get '/' do
-	#reads records for collection 'namen' sets it equal to telefonbuch
+	#reads collection 'namen' & transforms into array
 	telefonbuch = db['namen'].find().to_a
-
+	#result = apply block to every element in telefonbuch & join elements with break in between
 	result = telefonbuch.map{|document| "#{document['nachname']}, #{document['vorname']} <a href='delete?id=#{document['_id']}'>Delete</a> <a href='update?id=#{document['_id']}'>Update</a>"}.join("<br>")
-	result += '<br><a href="new">New</a>'
+	#Adds link to get '/new'
+	result = result + '<br><a href="new">New</a>' 
+	#returns the result
 	result
 end
 
+#Add a new user 
 get '/new' do
+	#renders our form in html and sends it to post '/new'
 	'<form method="post" action="new">
 		<input name="vorname" type="text" placeholder="First name"></input><br>
 		<input name="nachname" type="text" placeholder="Last name"></input>
@@ -29,7 +35,7 @@ post '/new' do
      vorname = params[:vorname]
      nachname = params[:nachname]
      db['namen'].insert({:vorname=> vorname, :nachname=> nachname})
-     "#{nachname}, #{vorname} wurde eingetragen! <a href='new'>New</a> <a href='/'>All</a> "
+     "#{nachname}, #{vorname} have been added! <a href='new'>New</a> <a href='/'>All</a> "
 end
 
 get '/delete' do
