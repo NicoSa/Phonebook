@@ -2,15 +2,19 @@ require 'rubygems'
 require 'sinatra'
 require 'mongo'
 require 'bson'
-
+require 'uri'
 
 #is for output in the console using foreman start
 $stdout.sync = true 
 
 #Connects us to Database hosted on mongohq
-connection = Mongo::Connection.from_uri(ENV['MONGOHQ_URL'])
+dbConfig = URI.parse(ENV['MONGOHQ_URL'])
+db_name = dbConfig.path.gsub(/^\//, '')
+db = Mongo::Connection.new(dbConfig.host, dbConfig.port).db(db_name)
+db.authenticate(dbConfig.user, dbConfig.password) unless (dbConfig.user.nil? || dbConfig.user.nil?)
+
+
 #setting variable db equal to database
-db = connection['app21586193']
 
 #List all users in collection 'namen' + delete & update link 
 get '/' do
