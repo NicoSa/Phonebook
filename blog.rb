@@ -7,7 +7,7 @@ require 'uri'
 #is for output in the console using foreman start
 $stdout.sync = true 
 
-#Connects us to Database hosted on mongohq
+#Connects us to Database hosted as heroku addon on mongo hq look here: https://devcenter.heroku.com/articles/mongohq#use-with-ruby
 dbConfig = URI.parse(ENV['MONGOHQ_URL'])
 db_name = dbConfig.path.gsub(/^\//, '')
 db = Mongo::Connection.new(dbConfig.host, dbConfig.port).db(db_name)
