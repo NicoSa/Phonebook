@@ -10,7 +10,7 @@ $stdout.sync = true
 #Connects us to Database hosted on mongohq
 connection = Mongo::Connection.from_uri(ENV['MONGOHQ_URL'])
 #setting variable db equal to database
-db = connection['test1']
+db = connection['app21586193']
 
 #List all users in collection 'namen' + delete & update link 
 get '/' do
