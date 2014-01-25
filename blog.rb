@@ -2,13 +2,13 @@ require 'rubygems'
 require 'sinatra'
 require 'mongo'
 require 'bson'
-require_relative 'config'
+
 
 #is for output in the console using foreman start
 $stdout.sync = true 
 
 #Connects us to Database hosted on mongohq
-connection = Mongo::Connection.from_uri(DB_ADDRESS)
+connection = Mongo::Connection.from_uri(ENV['MONGOHQ_URL'])
 #setting variable db equal to database
 db = connection['test1']
 
