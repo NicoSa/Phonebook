@@ -21,11 +21,35 @@ get '/' do
 	#reads collection 'namen' & transforms into array
 	telefonbuch = db['namen'].find().to_a
 	#result = apply block to every element in telefonbuch & join elements with break in between
-	result = telefonbuch.map{|document| "#{document['nachname']}, #{document['vorname']}, #{document['nummer']} <a href='delete?id=#{document['_id']}'>Delete</a> <a href='update?id=#{document['_id']}'>Update</a>"}.join("<br>")
+	result = telefonbuch.map{|document| "<a href='delete?id=#{document['_id']}'>Delete</a>||<a href='update?id=#{document['_id']}'>Update</a>||#{document['nachname']}, #{document['vorname']}, #{document['nummer']} "}.join("<br>")
 	#Adds link to get '/new'
-	result = result + '<br><a href="new">New</a>' 
+	result = result + '<br><br><a href="new">New Entry</a>' + '<br><br><form method = "post" action ="search">
+	<input name="tosearch" type="text" placeholder="Search"></input>
+	<button>Go search!</button>
+	</form>'
 	#returns the result
 	result
+end
+
+post '/search' do
+#get input from search in get '/'
+search = params[:tosearch]
+#debugging
+puts "Input was = #{search}"
+#search for search entry in our database
+entries = db['namen'].find({'$or' => [{:vorname => search}, {:nachname => search}]}).to_a 
+#debugging
+puts entries
+	if entry = entries[0]
+		puts entry
+		vorname = entry["vorname"]
+		nachname = entry["nachname"]
+		nummer = entry["nummer"]
+		"Found someone: <br><br>His Majesty: #{vorname} #{nachname}<br><br>His number: #{nummer}<br><br><a href='/'>Back</a>"
+	else
+		"Sorry, no entry found!<br><br><a href='/'>Back</a>"
+	end
+#end
 end
 
 #Opens form to fill in names 
@@ -50,7 +74,7 @@ post '/new' do
      #feed collection namen inside database with the values passed from get '/new' via params
      db['namen'].insert({:vorname=> vorname, :nachname=> nachname, :nummer => nummer})
      #confirm adding and provide links to get '/' and get '/new'
-     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new'>New</a> <a href='/'>All</a> "
+     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new'>New Entry</a> <a href='/'>All</a> "
 end
 
 #Delete a user from database
@@ -60,7 +84,7 @@ get '/delete' do
     #removes entry with that id from database
 	db['namen'].remove({:_id=> BSON::ObjectId.from_string(id)})
 	#confirms removal and provides links to get '/new' and get '/'
-     "Entry with the ID:#{id} was removed! <a href='new'>New</a> <a href='/'>All</a> "
+     "Entry with the ID:#{id} was removed! <a href='new'>New Entry</a> <a href='/'>All</a> "
 end
 
 #Give 'new' form with current user
