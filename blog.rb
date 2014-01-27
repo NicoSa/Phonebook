@@ -21,7 +21,7 @@ get '/' do
 	#reads collection 'namen' & transforms into array
 	telefonbuch = db['namen'].find().to_a
 	#result = apply block to every element in telefonbuch & join elements with break in between
-	result = telefonbuch.map{|document| "#{document['nachname']}, #{document['vorname']} <a href='delete?id=#{document['_id']}'>Delete</a> <a href='update?id=#{document['_id']}'>Update</a>"}.join("<br>")
+	result = telefonbuch.map{|document| "#{document['nachname']}, #{document['vorname']}, #{document['nummer']} <a href='delete?id=#{document['_id']}'>Delete</a> <a href='update?id=#{document['_id']}'>Update</a>"}.join("<br>")
 	#Adds link to get '/new'
 	result = result + '<br><a href="new">New</a>' 
 	#returns the result
@@ -33,7 +33,8 @@ get '/new' do
 	#renders our form in html and sends it to post '/new'
 	'<form method="post" action="new">
 		<input name="vorname" type="text" placeholder="First name"></input><br>
-		<input name="nachname" type="text" placeholder="Last name"></input>
+		<input name="nachname" type="text" placeholder="Last name"></input><br>
+		<input name="nummer" type="text" placeholder="Phone number"></input>
 		<button>Save</button>
 	</form>'
 end
@@ -43,12 +44,13 @@ post '/new' do
 #set variables for data from form
      vorname = params[:vorname]
      nachname = params[:nachname]
+     nummer = params[:nummer]
      #for debugging in console
      puts "#{params}"
      #feed collection namen inside database with the values passed from get '/new' via params
-     db['namen'].insert({:vorname=> vorname, :nachname=> nachname})
+     db['namen'].insert({:vorname=> vorname, :nachname=> nachname, :nummer => nummer})
      #confirm adding and provide links to get '/' and get '/new'
-     "#{nachname}, #{vorname} have been added! <a href='new'>New</a> <a href='/'>All</a> "
+     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new'>New</a> <a href='/'>All</a> "
 end
 
 #Delete a user from database
@@ -75,6 +77,7 @@ get '/update' do
 	#set vorname, nachname equal to person hash entries
 	vorname = person["vorname"]
 	nachname = person["nachname"]
+	nummer = person["nummer"]
 	#debugging
 	puts "#{vorname}"
 	puts "#{nachname}"
@@ -82,6 +85,7 @@ get '/update' do
 	 %{<form method="post" action="update?id=#{id}">
 		<input name="vorname" type="text" placeholder="First name" value="#{vorname}"></input><br>
 		<input name="nachname" type="text" placeholder="Last name" value="#{nachname}"></input><br>
+		<input name="nummer" type="text" placeholder="Phone number" value="#{nummer}"></input><br>
 		<button>Save</button>
 	</form>}
 
@@ -96,16 +100,18 @@ post '/update' do
 	#gets new names from form
 	vorname = params[:vorname]
 	nachname = params[:nachname]
+	nummer = params[:nummer]
 	#find correlating database entry and convert to hash object
 	persons = db['namen'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
 	person = persons[0]
 	#fill hash with new names from form
 	person["vorname"] = vorname
 	person["nachname"] = nachname
+	person["nummer"] = nummer
 	#save new entries from person hash to database
 	db['namen'].save(person)
 	#updated message
-     "#{nachname}, #{vorname} has been updated! <a href='new'>New</a> <a href='/'>All</a> "
+     "#{nachname}, #{vorname},#{nummer} has been updated! <a href='new'>New</a> <a href='/'>All</a> "
 
 end
 
