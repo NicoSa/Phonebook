@@ -37,7 +37,7 @@ search = params[:tosearch]
 #debugging
 puts "Input was = #{search}"
 #search for search entry in our database
-entries = db['namen'].find({'$or' => [{:vorname => search}, {:nachname => search}]}).to_a 
+entries = db['namen'].find({'$or' => [{:vorname => search}, {:nachname => search}, {:nummer => search}]}).to_a 
 #debugging
 puts entries
 	if entry = entries[0]
