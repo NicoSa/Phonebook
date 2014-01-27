@@ -37,7 +37,7 @@ search = params[:tosearch]
 #debugging
 puts "Input was = #{search}"
 #search for search entry in our database
-entries = db['namen'].find({'$or' => [{:vorname => search}, {:nachname => search}, {:nummer => search}]}).to_a 
+entries = db['namen'].find({'$or' => [{:vorname => search.downcase.capitalize}, {:nachname => search.downcase.capitalize}, {:nummer => search}]}).to_a 
 #debugging
 puts entries
 	if entry = entries[0]
@@ -72,7 +72,7 @@ post '/new' do
      #for debugging in console
      puts "#{params}"
      #feed collection namen inside database with the values passed from get '/new' via params
-     db['namen'].insert({:vorname=> vorname, :nachname=> nachname, :nummer => nummer})
+     db['namen'].insert({:vorname=> vorname.downcase.capitalize, :nachname=> nachname.downcase.capitalize, :nummer => nummer})
      #confirm adding and provide links to get '/' and get '/new'
      "#{nachname}, #{vorname},#{nummer} have been added! <a href='new'>New Entry</a> <a href='/'>All</a> "
 end
