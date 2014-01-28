@@ -63,7 +63,7 @@ post '/search' do
 				#for debugging
 				#puts "#{vorname} #{nachname}#{nummer}"
 				#put result on the screen for every cycle
-				found += "Found #{entrysize} entries: <br><br>Name: #{vorname} #{nachname}<br><br>Number: #{nummer}<br><br><a href='/'>Back</a><br>"
+				found += "___________________<br><br>Name: #{vorname} #{nachname}<br><br>Number: #{nummer}<br><br><br>"
 				puts found
 
 			else
@@ -73,7 +73,9 @@ post '/search' do
 			
 
 		end
-found
+"Number of entries found: #{entrysize}<br><br>#{found}<a href='/'>Back</a>"
+
+
 
 end
 
