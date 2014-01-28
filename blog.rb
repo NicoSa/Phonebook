@@ -55,19 +55,20 @@ post '/search' do
 				vorname = entry["vorname"]
 				nachname = entry["nachname"]
 				nummer = entry["nummer"]
+				
 				#add 1 per cycle
 				x += 1
 				#for debugging
-				puts "Found #{entrysize} entries: <br><br>His Majesty: #{vorname} #{nachname}<br><br>His number: #{nummer}<br><br><a href='/'>Back</a>"
+				puts "Found #{entrysize} entries: <br><br>Name: #{vorname} #{nachname}<br><br>Number: #{nummer}<br><br><a href='/'>Back</a>"
 				#put result on the screen for every cycle
-				"Found #{entrysize} entries: <br><br>His Majesty: #{vorname} #{nachname}<br><br>His number: #{nummer}<br><br><a href='/'>Back</a>"
+				found = "Found #{entrysize} entries: <br><br>Name: #{vorname} #{nachname}<br><br>Number: #{nummer}<br><br><a href='/'>Back</a>"
 			else
 				#if there are no entries display this message
 				"Sorry, no entries found!"
 			end
 			
 		end
-	 
+	 found
 end
 
 #Opens form to fill in names 
