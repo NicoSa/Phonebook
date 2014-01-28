@@ -63,11 +63,11 @@ post '/search' do
 				"Found #{entrysize} entries: <br><br>His Majesty: #{vorname} #{nachname}<br><br>His number: #{nummer}<br><br><a href='/'>Back</a>"
 			else
 				#if there are no entries display this message
-				"Sorry, no entry found!<br><br><a href='/'>Back</a>"
+				"Sorry, no entries found!"
 			end
 			
 		end
-		
+	 
 end
 
 #Opens form to fill in names 
