@@ -33,23 +33,32 @@ end
 
 post '/search' do
 #get input from search in get '/'
-search = params[:tosearch]
-#debugging
-puts "Input was = #{search}"
-#search for search entry in our database
-entries = db['namen'].find({'$or' => [{:vorname => search.downcase.split(" ").map(&:capitalize).join(" ")}, {:nachname => search.downcase.split(" ").map(&:capitalize).join(" ")}, {:nummer => search}]}).to_a 
-#debugging
-puts entries
-	if entry = entries[0]
-		puts entry
-		vorname = entry["vorname"]
-		nachname = entry["nachname"]
-		nummer = entry["nummer"]
-		"Found someone: <br><br>His Majesty: #{vorname} #{nachname}<br><br>His number: #{nummer}<br><br><a href='/'>Back</a>"
-	else
-		"Sorry, no entry found!<br><br><a href='/'>Back</a>"
-	end
-#end
+	search = params[:tosearch]
+	#debugging
+	puts "Input was = #{search}"
+	#search for search entry in our database
+	entries = db['namen'].find({'$or' => [{:vorname => /#{Regexp.escape(search)}/i}, {:nachname => /#{Regexp.escape(search)}/i}, {:nummer => search}]}).to_a 
+	#debugging
+	puts entries
+	entrysize = entries.size
+	#debugging
+	puts entrysize
+	x = 0
+		while x < entrysize do
+
+			if entry = entries.shift
+				puts entry
+				vorname = entry["vorname"]
+				nachname = entry["nachname"]
+				nummer = entry["nummer"]
+				x += 1
+				puts "Found someone: <br><br>His Majesty: #{vorname} #{nachname}<br><br>His number: #{nummer}<br><br><a href='/'>Back</a>"
+			else
+				"Sorry, no entry found!<br><br><a href='/'>Back</a>"
+			end
+			
+		end
+		
 end
 
 #Opens form to fill in names 
