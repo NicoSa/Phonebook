@@ -31,6 +31,7 @@ get '/' do
 	result
 end
 
+#searches for search term
 post '/search' do
 #get input from search in get '/'
 	search = params[:tosearch]
@@ -38,44 +39,37 @@ post '/search' do
 	puts "Input was = #{search}"
 	#search for search entry in our database
 	entries = db['namen'].find({'$or' => [{:vorname => /#{Regexp.escape(search)}/i}, {:nachname => /#{Regexp.escape(search)}/i}, {:nummer => search}]}).to_a 
-	#debugging
-	#puts entries
+	#converts number of entries into number
 	entrysize = entries.size
-	#debugging
-	#puts entrysize
-	#x is set to zero cause it should starting cycling at zero
+
+	#x is set to zero cause so the while loop starts circling at zero
 	x = 0
+	#setting empty string found
 	found = " "
-	#while x is smaller than the amount of entries continue loop
+	#while x is smaller than entrysize continue loop and concate found
 		while x < entrysize do
 			
-			#if this is performable, do it
+			#if there is an entry concate it into found
 			if entry = entries.shift
-				#for debugging
-				#puts entry
 				#convert each value into a variable for a string
 				vorname = entry["vorname"]
 				nachname = entry["nachname"]
 				nummer = entry["nummer"]
-				#found += "Found #{entrysize} entries: <br><br>Name: #{vorname} #{nachname}<br><br>Number: #{nummer}<br><br><a href='/'>Back</a><br>"
-				#add 1 per cycle
+				#add 1 to x per cycle so it stops when the number of entries is reached
 				x += 1
-				#for debugging
-				#puts "#{vorname} #{nachname}#{nummer}"
-				#put result on the screen for every cycle
+				#adds entry as string to found
 				found += "___________________<br><br>Name: #{vorname} #{nachname}<br><br>Number: #{nummer}<br><br><br>"
+				#debugging
 				puts found
 
 			else
 				#if there are no entries display this message
 				"Sorry, no entries found!"
 			end
-			
-
+		
 		end
+#What´s gonna be on the search result screen
 "Number of entries found: #{entrysize}<br><br>#{found}<a href='/'>Back</a>"
-
-
 
 end
 
