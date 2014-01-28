@@ -63,7 +63,7 @@ post '/search' do
 				#for debugging
 				#puts "#{vorname} #{nachname}#{nummer}"
 				#put result on the screen for every cycle
-				puts "Found #{entrysize} entries: <br><br>Name: #{vorname} #{nachname}<br><br>Number: #{nummer}<br><br><a href='/'>Back</a><br>"
+				found = "Found #{entrysize} entries: <br><br>Name: #{vorname} #{nachname}<br><br>Number: #{nummer}<br><br><a href='/'>Back</a><br>"
 			else
 				#if there are no entries display this message
 				"Sorry, no entries found!"
@@ -71,7 +71,7 @@ post '/search' do
 			
 
 		end
-		"Found #{entrysize} entries: <br><br>Name: #{vorname} #{nachname}<br><br>Number: #{nummer}<br><br><a href='/'>Back</a><br>"
+		found
 
 end
 
