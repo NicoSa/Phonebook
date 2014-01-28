@@ -39,36 +39,40 @@ post '/search' do
 	#search for search entry in our database
 	entries = db['namen'].find({'$or' => [{:vorname => /#{Regexp.escape(search)}/i}, {:nachname => /#{Regexp.escape(search)}/i}, {:nummer => search}]}).to_a 
 	#debugging
-	puts entries
+	#puts entries
 	entrysize = entries.size
 	#debugging
-	puts entrysize
+	#puts entrysize
 	#x is set to zero cause it should starting cycling at zero
 	x = 0
+	
 	#while x is smaller than the amount of entries continue loop
 		while x < entrysize do
+			
 			#if this is performable, do it
 			if entry = entries.shift
 				#for debugging
-				puts entry
+				#puts entry
 				#convert each value into a variable for a string
 				vorname = entry["vorname"]
 				nachname = entry["nachname"]
 				nummer = entry["nummer"]
-				
+				#found += "Found #{entrysize} entries: <br><br>Name: #{vorname} #{nachname}<br><br>Number: #{nummer}<br><br><a href='/'>Back</a><br>"
 				#add 1 per cycle
 				x += 1
 				#for debugging
-				puts "Found #{entrysize} entries: <br><br>Name: #{vorname} #{nachname}<br><br>Number: #{nummer}<br><br><a href='/'>Back</a>"
+				#puts "#{vorname} #{nachname}#{nummer}"
 				#put result on the screen for every cycle
-				found = "Found #{entrysize} entries: <br><br>Name: #{vorname} #{nachname}<br><br>Number: #{nummer}<br><br><a href='/'>Back</a>"
+				puts "Found #{entrysize} entries: <br><br>Name: #{vorname} #{nachname}<br><br>Number: #{nummer}<br><br><a href='/'>Back</a><br>"
 			else
 				#if there are no entries display this message
 				"Sorry, no entries found!"
 			end
 			
+
 		end
-	 found
+		"Found #{entrysize} entries: <br><br>Name: #{vorname} #{nachname}<br><br>Number: #{nummer}<br><br><a href='/'>Back</a><br>"
+
 end
 
 #Opens form to fill in names 
