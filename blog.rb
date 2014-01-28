@@ -43,17 +43,26 @@ post '/search' do
 	entrysize = entries.size
 	#debugging
 	puts entrysize
+	#x is set to zero cause it should starting cycling at zero
 	x = 0
+	#while x is smaller than the amount of entries continue loop
 		while x < entrysize do
-
+			#if this is performable, do it
 			if entry = entries.shift
+				#for debugging
 				puts entry
+				#convert each value into a variable for a string
 				vorname = entry["vorname"]
 				nachname = entry["nachname"]
 				nummer = entry["nummer"]
+				#add 1 per cycle
 				x += 1
+				#for debugging
 				puts "Found #{entrysize} entries: <br><br>His Majesty: #{vorname} #{nachname}<br><br>His number: #{nummer}<br><br><a href='/'>Back</a>"
+				#put result on the screen for every cycle
+				"Found #{entrysize} entries: <br><br>His Majesty: #{vorname} #{nachname}<br><br>His number: #{nummer}<br><br><a href='/'>Back</a>"
 			else
+				#if there are no entries display this message
 				"Sorry, no entry found!<br><br><a href='/'>Back</a>"
 			end
 			
