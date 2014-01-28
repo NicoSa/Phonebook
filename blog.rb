@@ -52,7 +52,7 @@ post '/search' do
 				nachname = entry["nachname"]
 				nummer = entry["nummer"]
 				x += 1
-				puts "Found someone: <br><br>His Majesty: #{vorname} #{nachname}<br><br>His number: #{nummer}<br><br><a href='/'>Back</a>"
+				puts "Found #{entrysize} entries: <br><br>His Majesty: #{vorname} #{nachname}<br><br>His number: #{nummer}<br><br><a href='/'>Back</a>"
 			else
 				"Sorry, no entry found!<br><br><a href='/'>Back</a>"
 			end
