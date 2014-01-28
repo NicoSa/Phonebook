@@ -45,10 +45,10 @@ post '/search' do
 	#puts entrysize
 	#x is set to zero cause it should starting cycling at zero
 	x = 0
-	
+	found = " "
 	#while x is smaller than the amount of entries continue loop
 		while x < entrysize do
-			found = " "
+			
 			#if this is performable, do it
 			if entry = entries.shift
 				#for debugging
@@ -73,7 +73,7 @@ post '/search' do
 			
 
 		end
-puts found
+found
 
 end
 
