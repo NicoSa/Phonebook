@@ -129,9 +129,9 @@ post '/update' do
 	persons = db['namen'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
 	person = persons[0]
 	#fill hash with new names from form
-	person["vorname"] = vorname
-	person["nachname"] = nachname
-	person["nummer"] = nummer
+	person["vorname"] = vorname.downcase.split(" ").map(&:capitalize).join(" ")
+	person["nachname"] = nachname.downcase.split(" ").map(&:capitalize).join(" ")
+	person["nummer"] = nummer.downcase.split(" ").map(&:capitalize).join(" ")
 	#save new entries from person hash to database
 	db['namen'].save(person)
 	#updated message
