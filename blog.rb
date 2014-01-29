@@ -19,7 +19,7 @@ db.authenticate(dbConfig.user, dbConfig.password) unless (dbConfig.user.nil? || 
 #List all users in collection 'namen' + delete & update link 
 get '/' do
 	#reads collection 'namen' & transforms into array
-	telefonbuch = db['namen'].find().to_a
+	telefonbuch = db['namen'].find.sort(:nachname => :asc).to_a
 	#result = apply block to every element in telefonbuch & join elements with break in between
 	result = telefonbuch.map{|document| "<a href='delete?id=#{document['_id']}'>Delete</a>||<a href='update?id=#{document['_id']}'>Update</a>||#{document['nachname']}, #{document['vorname']}, #{document['nummer']} "}.join("<br>")
 	#Adds link to get '/new'
@@ -94,7 +94,6 @@ post '/new' do
      puts "#{params}"
      #feed collection namen inside database with the values passed from get '/new' via params
      db['namen'].insert({:vorname=> vorname.downcase.split(" ").map(&:capitalize).join(" "), :nachname=> nachname.downcase.split(" ").map(&:capitalize).join(" "), :nummer => nummer})
-     #confirm adding and provide links to get '/' and get '/new'
      "#{nachname}, #{vorname},#{nummer} have been added! <a href='new'>New Entry</a> <a href='/'>All</a> "
 end
 
