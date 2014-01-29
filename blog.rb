@@ -38,11 +38,11 @@ post '/search' do
 	#debugging
 	puts "Input was = #{search}"
 	#search for search entry in our database
-	entries = db['namen'].find({'$or' => [{:vorname => /#{Regexp.escape(search)}/imxs}, {:nachname => /#{Regexp.escape(search)}/imxs}, {:nummer => search}]}).to_a 
+	entries = db['namen'].find({'$or' => [{:vorname => /#{Regexp.escape(search)}/ix}, {:nachname => /#{Regexp.escape(search)}/ix}, {:nummer => /#{Regexp.escape(search)}/ix}]}).to_a 
 	#converts number of entries into number
 	entrysize = entries.size
 
-	#x is set to zero cause so the while loop starts circling at zero
+	#x is set to zegit ro cause so the while loop starts circling at zero
 	x = 0
 	#setting empty string found
 	found = " "
