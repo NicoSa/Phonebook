@@ -38,7 +38,7 @@ post '/search' do
 	#debugging
 	puts "Input was = #{search}"
 	#search for search entry in our database
-	entries = db['namen'].find({'$or' => [{:vorname => /#{Regexp.escape(search)}/i}, {:nachname => /#{Regexp.escape(search)}/i}, {:nummer => search}]}).to_a 
+	entries = db['namen'].find({'$or' => [{:vorname => /#{Regexp.escape(search)}/imxs}, {:nachname => /#{Regexp.escape(search)}/imxs}, {:nummer => search}]}).to_a 
 	#converts number of entries into number
 	entrysize = entries.size
 
