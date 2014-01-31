@@ -89,7 +89,7 @@ post '/new' do
      nummer = params[:nummer]
      #check if fields are filled in
 	     if 
-		     vorname != "" && nachname != "" && nummer != "" && nummer.match(/[0-9]+/) 
+		    (vorname != "") && (nachname != "") && (nummer != "") && (nummer.match(/[0-9]+/))
 		     #for debugging in console
 		     puts "#{params}"
 		     #feed collection namen inside database with the values passed from get '/new' via params
@@ -97,7 +97,7 @@ post '/new' do
 		     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new' >New Entry</a> <a href='/'>All</a> "
 	 	elsif 
 	 		#if a field is not filled
-	 		(vorname != "" && nachname != "" && nummer != "") != true
+	 		((vorname != "") && (nachname != "") && (nummer != "")) != true
 	 		"Please fill in all required fields! <a href='new'>New Entry</a>"
 	 	else
 	 		#if there are no numbers in the number field
@@ -159,7 +159,7 @@ post '/update' do
 	     
 	     #check if fields are filled in
 	     if 
-		    vorname != "" && nachname != "" && nummer != "" && nummer.match(/[0-9]+/)
+		    (vorname != "") && (nachname != "") && (nummer != "") && (nummer.match(/[0-9]+/))
 		     #find correlating database entry and convert to hash object
 			persons = db['namen'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
 			person = persons[0]
@@ -172,7 +172,7 @@ post '/update' do
 			#updated message
 		     "#{nachname}, #{vorname},#{nummer} has been updated! <a href='new'>New</a> <a href='/'>All</a> "
 	 	elsif 
-	 		(vorname != "" && nachname != "" && nummer != "") != true
+	 		((vorname != "") && (nachname != "") && (nummer != "")) != true
 	 		"Please fill in all required fields! <a href='new'>New Entry</a>"
 	 	else
 	 		nummer.match(/[0-9]+/) != true
