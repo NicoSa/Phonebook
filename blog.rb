@@ -77,8 +77,8 @@ end
 get '/new' do
 	#renders our form in html and sends it to post '/new'
 	'<form method="post" action="new">
-		<input name="vorname" type="text" placeholder="First name" required ></input><br>
-		<input name="nachname" type="text" placeholder="Last name" required></input><br>
+		<input name="vorname" type="text" placeholder="First name" required pattern="[A-Za-z]+"></input><br>
+		<input name="nachname" type="text" placeholder="Last name" required pattern="[A-Za-z]+"></input><br>
 		<input name="nummer"  type="text" placeholder="Phone number" pattern="[0-9]+" required></input>
 		<button>Save</button>
 	</form>'
@@ -92,12 +92,12 @@ post '/new' do
      nummer = params[:nummer]
      #check if fields are filled in
 	     if 
-		     vorname != "" && nachname != "" && nummer != "" && nummer.match(/[0-9]+/)
+		     vorname != "" && nachname != "" && nummer != "" && nummer.match(/[0-9]+/) 
 		     #for debugging in console
 		     puts "#{params}"
 		     #feed collection namen inside database with the values passed from get '/new' via params
 		     db['namen'].insert({:vorname=> vorname.downcase.split(" ").map(&:capitalize).join(" "), :nachname=> nachname.downcase.split(" ").map(&:capitalize).join(" "), :nummer => nummer})
-		     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new'>New Entry</a> <a href='/'>All</a> "
+		     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new' >New Entry</a> <a href='/'>All</a> "
 	 	elsif 
 	 		#if a field is not filled
 	 		(vorname != "" && nachname != "" && nummer != "") != true
@@ -141,8 +141,8 @@ get '/update' do
 	puts "#{nachname}"
 	#form that contains current names and sends ID to post '/update'
 	 %{<form method="post" action="update?id=#{id}">
-		<input name="vorname" type="text" placeholder="First name" value="#{vorname}" required></input><br>
-		<input name="nachname" type="text" placeholder="Last name" value="#{nachname}" required></input><br>
+		<input name="vorname" type="text" placeholder="First name" value="#{vorname}" required pattern="[A-Za-z]+"></input><br>
+		<input name="nachname" type="text" placeholder="Last name" value="#{nachname}" required pattern="[A-Za-z]+"></input><br>
 		<input name="nummer" type="text" placeholder="Phone number" value="#{nummer}" required pattern="[0-9]+"></input><br>
 		<button>Save</button>
 	</form>}
@@ -159,7 +159,9 @@ post '/update' do
 	vorname = params[:vorname]
 	nachname = params[:nachname]
 	nummer = params[:nummer]
-	if 
+	     
+	     #check if fields are filled in
+	     if 
 		    vorname != "" && nachname != "" && nummer != "" && nummer.match(/[0-9]+/)
 		     #find correlating database entry and convert to hash object
 			persons = db['namen'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
