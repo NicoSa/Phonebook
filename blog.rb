@@ -77,9 +77,9 @@ end
 get '/new' do
 	#renders our form in html and sends it to post '/new'
 	'<form method="post" action="new">
-		<input name="vorname" type="text" placeholder="First name" required></input><br>
+		<input name="vorname" type="text" placeholder="First name" reuqired ></input><br>
 		<input name="nachname" type="text" placeholder="Last name" required></input><br>
-		<input name="nummer" type="text" placeholder="Phone number" required></input>
+		<input name="nummer"  type="text" placeholder="Phone number" pattern="[0-9]+"></input>
 		<button>Save</button>
 	</form>'
 end
@@ -90,21 +90,30 @@ post '/new' do
      vorname = params[:vorname]
      nachname = params[:nachname]
      nummer = params[:nummer]
-     #for debugging in console
-     puts "#{params}"
-     #feed collection namen inside database with the values passed from get '/new' via params
-     db['namen'].insert({:vorname=> vorname.downcase.split(" ").map(&:capitalize).join(" "), :nachname=> nachname.downcase.split(" ").map(&:capitalize).join(" "), :nummer => nummer})
-     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new'>New Entry</a> <a href='/'>All</a> "
+	     if 
+		     vorname != ""
+		     nachname != ""
+		     nummer != ""
+		     #for debugging in console
+		     puts "#{params}"
+		     #feed collection namen inside database with the values passed from get '/new' via params
+		     db['namen'].insert({:vorname=> vorname.downcase.split(" ").map(&:capitalize).join(" "), :nachname=> nachname.downcase.split(" ").map(&:capitalize).join(" "), :nummer => nummer})
+		     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new'>New Entry</a> <a href='/'>All</a> "
+	 	else
+	 		"Please fill in all the required fields! <a href='new'>New Entry</a>"
+	 	end
 end
 
 #Delete a user from database
 get '/delete' do
     #gets id to delete from get '/delete?id=#{document['_id']}'
     id = params[:id]
+    vorname = params[:vorname]
+     nachname = params[:nachname]
     #removes entry with that id from database
 	db['namen'].remove({:_id=> BSON::ObjectId.from_string(id)})
 	#confirms removal and provides links to get '/new' and get '/'
-     "Entry with the ID:#{id} was removed! <a href='new'>New Entry</a> <a href='/'>All</a> "
+     "Entry was removed! <a href='new'>New Entry</a> <a href='/'>All</a> "
 end
 
 #Give 'new' form with current user
@@ -127,9 +136,9 @@ get '/update' do
 	puts "#{nachname}"
 	#form that contains current names and sends ID to post '/update'
 	 %{<form method="post" action="update?id=#{id}">
-		<input name="vorname" type="text" placeholder="First name" value="#{vorname}"></input><br>
-		<input name="nachname" type="text" placeholder="Last name" value="#{nachname}"></input><br>
-		<input name="nummer" type="text" placeholder="Phone number" value="#{nummer}"></input><br>
+		<input name="vorname" type="text" placeholder="First name" value="#{vorname}" required></input><br>
+		<input name="nachname" type="text" placeholder="Last name" value="#{nachname}" required></input><br>
+		<input name="nummer" type="text" placeholder="Phone number" value="#{nummer}" required></input><br>
 		<button>Save</button>
 	</form>}
 
