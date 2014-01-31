@@ -13,6 +13,7 @@ db_name = dbConfig.path.gsub(/^\//, '')
 db = Mongo::Connection.new(dbConfig.host, dbConfig.port).db(db_name)
 db.authenticate(dbConfig.user, dbConfig.password) unless (dbConfig.user.nil? || dbConfig.user.nil?)
 
+
 #List all users in collection 'namen' + delete & update link 
 get '/' do
 	#reads collection 'namen' & transforms into array
@@ -102,7 +103,7 @@ post '/new' do
 	 	else
 	 		#if there are no numbers in the number field
 	 		nummer.match(/[0-9]+/) != true
-	 		"The number field only takes digits! Please enter digits! <a href='new'>New Entry</a>"
+	 		"The Phone number field only takes digits! Please enter digits! <a href='new'>New Entry</a>"
 	 	end
 end
 
@@ -176,7 +177,7 @@ post '/update' do
 	 		"Please fill in all required fields! <a href='new'>New Entry</a>"
 	 	else
 	 		nummer.match(/[0-9]+/) != true
-	 		"The number field only takes digits! Please enter digits! <a href='new'>New Entry</a>"
+	 		"The Phone Number field only takes digits! Please enter digits! <a href='new'>New Entry</a>"
 	 	end
 
 
