@@ -77,9 +77,9 @@ end
 get '/new' do
 	#renders our form in html and sends it to post '/new'
 	'<form method="post" action="new">
-		<input name="vorname" type="text" placeholder="First name" reuqired ></input><br>
+		<input name="vorname" type="text" placeholder="First name" required ></input><br>
 		<input name="nachname" type="text" placeholder="Last name" required></input><br>
-		<input name="nummer"  type="text" placeholder="Phone number" pattern="[0-9]+"></input>
+		<input name="nummer"  type="text" placeholder="Phone number" pattern="[0-9]+" required></input>
 		<button>Save</button>
 	</form>'
 end
@@ -91,16 +91,18 @@ post '/new' do
      nachname = params[:nachname]
      nummer = params[:nummer]
 	     if 
-		     vorname != ""
-		     nachname != ""
-		     nummer != ""
+		     vorname != "" && nachname != "" && nummer != "" && nummer.match(/[0-9]+/)
 		     #for debugging in console
 		     puts "#{params}"
 		     #feed collection namen inside database with the values passed from get '/new' via params
 		     db['namen'].insert({:vorname=> vorname.downcase.split(" ").map(&:capitalize).join(" "), :nachname=> nachname.downcase.split(" ").map(&:capitalize).join(" "), :nummer => nummer})
 		     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new'>New Entry</a> <a href='/'>All</a> "
+	 	elsif 
+	 		(vorname != "" && nachname != "" && nummer != "") != true
+	 		"Please fill in all required fields! <a href='new'>New Entry</a>"
 	 	else
-	 		"Please fill in all the required fields! <a href='new'>New Entry</a>"
+	 		nummer.match(/[0-9]+/) != true
+	 		"The number field only takes digits! Please enter digits! <a href='new'>New Entry</a>"
 	 	end
 end
 
