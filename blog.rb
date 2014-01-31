@@ -90,7 +90,7 @@ post '/new' do
      nummer = params[:nummer]
      #check if fields are filled in
 	     if 
-		    ((vorname != "") && (nachname != "")) && (vorname.match(/[A-Za-z\s]+/) && nachname.match(/[A-Za-z\s]+/)) && (nummer != "") && (nummer.match(/[0-9]+/))
+		    ((vorname != "") && (nachname != "")) && (vorname.match(/[^0-9\s]/) && nachname.match(/[^0-9\s]/)) && (nummer != "") && (nummer.match(/[^A-Za-z]/))
 		     #for debugging in console
 		     puts "#{params}"
 		     #feed collection namen inside database with the values passed from get '/new' via params
