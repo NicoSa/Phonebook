@@ -77,9 +77,9 @@ end
 get '/new' do
 	#renders our form in html and sends it to post '/new'
 	'<form method="post" action="new">
-		<input name="vorname" type="text" placeholder="First name"></input><br>
-		<input name="nachname" type="text" placeholder="Last name"></input><br>
-		<input name="nummer" type="text" placeholder="Phone number"></input>
+		<input name="vorname" type="text" placeholder="First name" required></input><br>
+		<input name="nachname" type="text" placeholder="Last name" required></input><br>
+		<input name="nummer" type="text" placeholder="Phone number" required></input>
 		<button>Save</button>
 	</form>'
 end
