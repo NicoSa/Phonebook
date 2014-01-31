@@ -90,7 +90,7 @@ post '/new' do
      nummer = params[:nummer]
      #check if fields are filled in
 	     if 
-		    (vorname != "") && (nachname != "") && (nummer != "") && (nummer.match(/[0-9]+/))
+		    ((vorname != "") && (nachname != "")) && (vorname.match(/[A-Za-z\s]+/) && nachname.match(/[A-Za-z\s]+/)) && (nummer != "") && (nummer.match(/[0-9]+/))
 		     #for debugging in console
 		     puts "#{params}"
 		     #feed collection namen inside database with the values passed from get '/new' via params
@@ -103,7 +103,7 @@ post '/new' do
 	 	else
 	 		#if there are no numbers in the number field
 	 		nummer.match(/[0-9]+/) != true
-	 		"The Phone number field only takes digits! Please enter digits! <a href='new'>New Entry</a>"
+	 		"Wrong format! Please enter digits for a Phone number and letters for your name! <a href='new'>New Entry</a>"
 	 	end
 end
 
@@ -160,7 +160,7 @@ post '/update' do
 	     
 	     #check if fields are filled in
 	     if 
-		    (vorname != "") && (nachname != "") && (nummer != "") && (nummer.match(/[0-9]+/))
+		    ((vorname != "") && (nachname != "")) && (vorname.match(/[A-Za-z\s]+/) && nachname.match(/[A-Za-z\s]+/)) && (nummer != "") && (nummer.match(/[0-9]+/))
 		     #find correlating database entry and convert to hash object
 			persons = db['namen'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
 			person = persons[0]
@@ -177,8 +177,8 @@ post '/update' do
 	 		"Please fill in all required fields! <a href='new'>New Entry</a>"
 	 	else
 	 		nummer.match(/[0-9]+/) != true
-	 		"The Phone Number field only takes digits! Please enter digits! <a href='new'>New Entry</a>"
-	 	end
+		"Wrong format! Please enter digits for a Phone number and letters for your name! <a href='new'>New Entry</a>"	 	
+		end
 
 
 end
