@@ -13,9 +13,6 @@ db_name = dbConfig.path.gsub(/^\//, '')
 db = Mongo::Connection.new(dbConfig.host, dbConfig.port).db(db_name)
 db.authenticate(dbConfig.user, dbConfig.password) unless (dbConfig.user.nil? || dbConfig.user.nil?)
 
-
-#setting variable db equal to database
-
 #List all users in collection 'namen' + delete & update link 
 get '/' do
 	#reads collection 'namen' & transforms into array
