@@ -75,8 +75,8 @@ end
 get '/new' do
 	#renders our form in html and sends it to post '/new'
 	'<form method="post" action="new">
-		<input name="vorname" type="text" placeholder="First name" required pattern="[A-Za-z]+"></input><br>
-		<input name="nachname" type="text" placeholder="Last name" required pattern="[A-Za-z]+"></input><br>
+		<input name="vorname" type="text" placeholder="First name" required pattern="[A-Za-z\s]+"></input><br>
+		<input name="nachname" type="text" placeholder="Last name" required pattern="[A-Za-z\s]+"></input><br>
 		<input name="nummer"  type="text" placeholder="Phone number" pattern="[0-9]+" required></input>
 		<button>Save</button>
 	</form>'
@@ -139,8 +139,8 @@ get '/update' do
 	puts "#{nachname}"
 	#form that contains current names and sends ID to post '/update'
 	 %{<form method="post" action="update?id=#{id}">
-		<input name="vorname" type="text" placeholder="First name" value="#{vorname}" required pattern="[A-Za-z]+"></input><br>
-		<input name="nachname" type="text" placeholder="Last name" value="#{nachname}" required pattern="[A-Za-z]+"></input><br>
+		<input name="vorname" type="text" placeholder="First name" value="#{vorname}" required pattern="[A-Za-z\s]+"></input><br>
+		<input name="nachname" type="text" placeholder="Last name" value="#{nachname}" required pattern="[A-Za-z\s]+""></input><br>
 		<input name="nummer" type="text" placeholder="Phone number" value="#{nummer}" required pattern="[0-9]+"></input><br>
 		<button>Save</button>
 	</form>}
