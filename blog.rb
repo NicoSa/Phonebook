@@ -143,7 +143,7 @@ get '/update' do
 	 %{<form method="post" action="update?id=#{id}">
 		<input name="vorname" type="text" placeholder="First name" value="#{vorname}" required></input><br>
 		<input name="nachname" type="text" placeholder="Last name" value="#{nachname}" required></input><br>
-		<input name="nummer" type="text" placeholder="Phone number" value="#{nummer}" required></input><br>
+		<input name="nummer" type="text" placeholder="Phone number" value="#{nummer}" required pattern="[0-9]+"></input><br>
 		<button>Save</button>
 	</form>}
 
