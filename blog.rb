@@ -90,6 +90,7 @@ post '/new' do
      vorname = params[:vorname]
      nachname = params[:nachname]
      nummer = params[:nummer]
+     #check if fields are filled in
 	     if 
 		     vorname != "" && nachname != "" && nummer != "" && nummer.match(/[0-9]+/)
 		     #for debugging in console
@@ -98,9 +99,11 @@ post '/new' do
 		     db['namen'].insert({:vorname=> vorname.downcase.split(" ").map(&:capitalize).join(" "), :nachname=> nachname.downcase.split(" ").map(&:capitalize).join(" "), :nummer => nummer})
 		     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new'>New Entry</a> <a href='/'>All</a> "
 	 	elsif 
+	 		#if a field is not filled
 	 		(vorname != "" && nachname != "" && nummer != "") != true
 	 		"Please fill in all required fields! <a href='new'>New Entry</a>"
 	 	else
+	 		#if there are no numbers in the number field
 	 		nummer.match(/[0-9]+/) != true
 	 		"The number field only takes digits! Please enter digits! <a href='new'>New Entry</a>"
 	 	end
@@ -156,17 +159,27 @@ post '/update' do
 	vorname = params[:vorname]
 	nachname = params[:nachname]
 	nummer = params[:nummer]
-	#find correlating database entry and convert to hash object
-	persons = db['namen'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
-	person = persons[0]
-	#fill hash with new names from form
-	person["vorname"] = vorname.downcase.split(" ").map(&:capitalize).join(" ")
-	person["nachname"] = nachname.downcase.split(" ").map(&:capitalize).join(" ")
-	person["nummer"] = nummer.downcase.split(" ").map(&:capitalize).join(" ")
-	#save new entries from person hash to database
-	db['namen'].save(person)
-	#updated message
-     "#{nachname}, #{vorname},#{nummer} has been updated! <a href='new'>New</a> <a href='/'>All</a> "
+	if 
+		    vorname != "" && nachname != "" && nummer != "" && nummer.match(/[0-9]+/)
+		     #find correlating database entry and convert to hash object
+			persons = db['namen'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
+			person = persons[0]
+			#fill hash with new names from form
+			person["vorname"] = vorname.downcase.split(" ").map(&:capitalize).join(" ")
+			person["nachname"] = nachname.downcase.split(" ").map(&:capitalize).join(" ")
+			person["nummer"] = nummer.downcase.split(" ").map(&:capitalize).join(" ")
+			#save new entries from person hash to database
+			db['namen'].save(person)
+			#updated message
+		     "#{nachname}, #{vorname},#{nummer} has been updated! <a href='new'>New</a> <a href='/'>All</a> "
+	 	elsif 
+	 		(vorname != "" && nachname != "" && nummer != "") != true
+	 		"Please fill in all required fields! <a href='new'>New Entry</a>"
+	 	else
+	 		nummer.match(/[0-9]+/) != true
+	 		"The number field only takes digits! Please enter digits! <a href='new'>New Entry</a>"
+	 	end
+
 
 end
 
