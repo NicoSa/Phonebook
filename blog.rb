@@ -88,8 +88,10 @@ end
 
 #List all users in collection 'namen' + delete & update link 
 get '/' do
-	id = params[:id]
-	puts id
+	#gets id from login
+	userid = params[:id]
+	#debugging, has id been passed?
+	puts userid
 	#reads collection 'namen' & transforms into array
 	telefonbuch = db['namen'].find.sort(:nachname => :asc).to_a
 	#result = apply block to every element in telefonbuch & join elements with break in between
