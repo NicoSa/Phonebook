@@ -13,6 +13,57 @@ db_name = dbConfig.path.gsub(/^\//, '')
 db = Mongo::Connection.new(dbConfig.host, dbConfig.port).db(db_name)
 db.authenticate(dbConfig.user, dbConfig.password) unless (dbConfig.user.nil? || dbConfig.user.nil?)
 
+get '/login' do
+	%{<form method = "post" action ="login">
+	<input name="nickname" type="text" placeholder="Nickname" required pattern="[A-Za-z\s]+"></input><br>
+	<input name="password" type="password" placeholder="Password" required pattern="[0-9]+"></input><br>
+	<button>Login!</button>
+	</form>
+	<br><a href='welcome'>Back</a>}
+
+end
+
+post '/login' do
+	nickname = params[:nickname]
+    password = params[:password]
+    puts nickname
+    puts password
+	if
+		user = db['users'].find({ '$and' => [ { nickname: nickname }, { password: password } ] } ).to_a
+		"User was found"
+	else
+		"User wasn´t found"
+	end
+end
+
+get '/signup' do
+	%{<form method = "post" action ="signup">
+	<input name="nickname" type="text" placeholder="Nickname" required pattern="[A-Za-z\s]+"></input><br>
+	<input name="password" type="password" placeholder="Password" required pattern="[0-9]+"></input><br>
+	<button>Sign up!</button>
+	</form>
+	<br><a href='welcome'>Back</a>}
+end
+
+post '/signup' do
+	nickname = params[:nickname]
+    password = params[:password]
+    #favorite = params[:favorite]
+	puts nickname
+	puts password
+	#puts favorite
+   	users = db['users'].insert({user: {nickname: nickname, password: password}}).to_a
+   	puts "#{users}"
+   	"Successfully signed up! <a href='login'>Login</a> <a href='welcome'>Back</a>"
+
+
+end
+
+get '/welcome' do
+	'<center><h1>Welcome to your phonebook!</h1>
+	<a href="login">Login</a>
+	<a href="signup">Signup</a></center>'
+end
 
 #List all users in collection 'namen' + delete & update link 
 get '/' do
