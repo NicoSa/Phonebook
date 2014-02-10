@@ -4,6 +4,7 @@ require 'mongo'
 require 'bson'
 require 'uri'
 
+
 #is for output in the console using foreman start
 $stdout.sync = true 
 
@@ -14,9 +15,9 @@ db = Mongo::Connection.new(dbConfig.host, dbConfig.port).db(db_name)
 db.authenticate(dbConfig.user, dbConfig.password) unless (dbConfig.user.nil? || dbConfig.user.nil?)
 
 get '/login' do
-	%{<form method = "post" action ="login">
-	<input name="nickname" type="text" placeholder="Nickname" required pattern="[A-Za-z\s]+"></input><br>
-	<input name="password" type="password" placeholder="Password" required pattern="[0-9]+"></input><br>
+	%{<h1>Login</h1><form method = "post" action ="login">
+	<input name="nickname" type="text" placeholder="Nickname" required></input><br>
+	<input name="password" type="password" placeholder="Password" required></input><br>
 	<button>Login!</button>
 	</form>
 	<br><a href='welcome'>Back</a>}
@@ -30,20 +31,21 @@ post '/login' do
     puts password
 	user = db['users'].find({ '$and' => [{:nickname => nickname}, {:password => password}]} ).to_a
 	puts user
-	if 
-		user.size > 0
-		"User found"
-	else
-		user.size <= 0
-		"User not found"
-	end
+		if 
+			user.size > 0
+			puts "User found"
+			redirect '/'
+		else
+			user.size <= 0
+			"User not found<br><a href='login'>Login</a>"
+		end
 	
 end
 
 get '/signup' do
-	%{<form method = "post" action ="signup">
-	<input name="nickname" type="text" placeholder="Nickname" required pattern="[A-Za-z\s]+"></input><br>
-	<input name="password" type="password" placeholder="Password" required pattern="[0-9]+"></input><br>
+	%{<h1>Signup</h1><form method = "post" action ="signup">
+	<input name="nickname" type="text" placeholder="Nickname" required></input><br>
+	<input name="password" type="password" placeholder="Password" required></input><br>
 	<button>Sign up!</button>
 	</form>
 	<br><a href='welcome'>Back</a>}
@@ -56,10 +58,17 @@ post '/signup' do
 	puts nickname
 	puts password
 	#puts favorite
-   	user = db['users'].insert({:nickname => nickname, :password => password})
-   	puts user
-   	"Successfully signed up! <a href='login'>Login</a> <a href='welcome'>Back</a>"
-
+   		if 
+		    (nickname != "") && (password != "")
+		    user = db['users'].insert({:nickname => nickname, :password => password})
+   			puts user
+   			"Successfully signed up!<br><a href='login'>Login</a>"
+   			
+	 	else 
+	 		#if a field is not filled
+	 		((nickname != "") && (password != "")) != true
+	 		"Please fill in all required fields!<br><a href='signup'>Signup</a>"
+	 	end
 
 end
 
