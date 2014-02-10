@@ -28,12 +28,16 @@ post '/login' do
     password = params[:password]
     puts nickname
     puts password
-	if
-		user = db['users'].find({ '$and' => [ { nickname: nickname }, { password: password } ] } ).to_a
-		"User was found"
+	user = db['users'].find({ '$and' => [{:nickname => nickname}, {:password => password}]} ).to_a
+	puts user
+	if 
+		user.size > 0
+		"User found"
 	else
-		"User wasn´t found"
+		user.size <= 0
+		"User not found"
 	end
+	
 end
 
 get '/signup' do
@@ -52,8 +56,8 @@ post '/signup' do
 	puts nickname
 	puts password
 	#puts favorite
-   	users = db['users'].insert({user: {nickname: nickname, password: password}}).to_a
-   	puts "#{users}"
+   	user = db['users'].insert({:nickname => nickname, :password => password})
+   	puts user
    	"Successfully signed up! <a href='login'>Login</a> <a href='welcome'>Back</a>"
 
 
