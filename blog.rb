@@ -30,15 +30,23 @@ post '/login' do
     puts nickname
     puts password
 	user = db['users'].find({ '$and' => [{:nickname => nickname}, {:password => password}]} ).to_a
+	#debugging
 	puts user
+	id = user[0] 
+	thisid = id["_id"]
+	#debugging
+	puts thisid
+		
 		if 
 			user.size > 0
 			puts "User found"
-			redirect '/'
+			
+			redirect "/?id=#{thisid}"
 		else
 			user.size <= 0
 			"User not found<br><a href='login'>Login</a>"
 		end
+
 	
 end
 
@@ -80,6 +88,8 @@ end
 
 #List all users in collection 'namen' + delete & update link 
 get '/' do
+	id = params[:id]
+	puts id
 	#reads collection 'namen' & transforms into array
 	telefonbuch = db['namen'].find.sort(:nachname => :asc).to_a
 	#result = apply block to every element in telefonbuch & join elements with break in between
