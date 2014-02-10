@@ -20,7 +20,7 @@ get '/login' do
 	<input name="password" type="password" placeholder="Password" required></input><br>
 	<button>Login!</button>
 	</form>
-	<br><a href='welcome'>Back</a>}
+	<br><a href='/'>Back</a>}
 
 end
 
@@ -41,7 +41,7 @@ post '/login' do
 			user.size > 0
 			puts "User found"
 			
-			redirect "/?id=#{thisid}"
+			redirect "/list?id=#{thisid}"
 		else
 			user.size <= 0
 			"User not found<br><a href='login'>Login</a>"
@@ -56,7 +56,7 @@ get '/signup' do
 	<input name="password" type="password" placeholder="Password" required></input><br>
 	<button>Sign up!</button>
 	</form>
-	<br><a href='welcome'>Back</a>}
+	<br><a href='/'>Back</a>}
 end
 
 post '/signup' do
@@ -80,27 +80,27 @@ post '/signup' do
 
 end
 
-get '/welcome' do
+get '/' do
 	'<center><h1>Welcome to your phonebook!</h1>
 	<a href="login">Login</a>
 	<a href="signup">Signup</a></center>'
 end
 
 #List all users in collection 'namen' + delete & update link 
-get '/' do
+get '/list' do
 	#gets id from login
-	userid = params[:id]
+	$userid = params[:id]
 	#debugging, has id been passed?
-	puts userid
+	puts $userid
 	#reads collection 'namen' & transforms into array
-	telefonbuch = db['namen'].find.sort(:nachname => :asc).to_a
+	telefonbuch = db["#{$userid}"].find.sort(:nachname => :asc).to_a
 	#result = apply block to every element in telefonbuch & join elements with break in between
 	result = telefonbuch.map{|document| "<a href='delete?id=#{document['_id']}'>Delete</a>||<a href='update?id=#{document['_id']}'>Update</a>||#{document['nachname']}, #{document['vorname']}, #{document['nummer']} "}.join("<br>")
 	#Adds link to get '/new'
 	result = result + '<br><br><a href="new">New Entry</a>' + '<br><br><form method = "post" action ="search">
 	<input name="tosearch" type="text" placeholder="Search"></input>
 	<button>Go search!</button>
-	</form>'
+	<br><br><a href="/">Logout</a></form>'
 	#returns the result
 	result
 end
@@ -112,7 +112,7 @@ post '/search' do
 	#debugging
 	puts "Input was = #{search}"
 	#search for search entry in our database
-	entries = db['namen'].find({'$or' => [{:vorname => /#{Regexp.escape(search)}/ix}, {:nachname => /#{Regexp.escape(search)}/ix}, {:nummer => /#{Regexp.escape(search)}/ix}]}).to_a 
+	entries = db["#{$userid}"].find({'$or' => [{:vorname => /#{Regexp.escape(search)}/ix}, {:nachname => /#{Regexp.escape(search)}/ix}, {:nummer => /#{Regexp.escape(search)}/ix}]}).to_a 
 	#converts number of entries into number
 	entrysize = entries.size
 
@@ -143,7 +143,7 @@ post '/search' do
 		
 		end
 #What´s gonna be on the search result screen
-"Number of entries found: #{entrysize}<br><br>#{found}<a href='/'>Back</a>"
+"Number of entries found: #{entrysize}<br><br>#{found}<a href='/list?id=#{$userid}'>Back</a>"
 
 end
 
@@ -170,8 +170,8 @@ post '/new' do
 		     #for debugging in console
 		     puts "#{params}"
 		     #feed collection namen inside database with the values passed from get '/new' via params
-		     db['namen'].insert({:vorname=> vorname.downcase.split(" ").map(&:capitalize).join(" "), :nachname=> nachname.downcase.split(" ").map(&:capitalize).join(" "), :nummer => nummer})
-		     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new' >New Entry</a> <a href='/'>All</a> "
+		     db["#{$userid}"].insert({:vorname=> vorname.downcase.split(" ").map(&:capitalize).join(" "), :nachname=> nachname.downcase.split(" ").map(&:capitalize).join(" "), :nummer => nummer})
+		     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new' >New Entry</a> <a href='/list?id=#{$userid}'>All</a> "
 	 	elsif 
 	 		#if a field is not filled
 	 		((vorname != "") && (nachname != "") && (nummer != "")) != true
@@ -190,9 +190,9 @@ get '/delete' do
     vorname = params[:vorname]
      nachname = params[:nachname]
     #removes entry with that id from database
-	db['namen'].remove({:_id=> BSON::ObjectId.from_string(id)})
+	db["#{$userid}"].remove({:_id=> BSON::ObjectId.from_string(id)})
 	#confirms removal and provides links to get '/new' and get '/'
-     "Entry was removed! <a href='new'>New Entry</a> <a href='/'>All</a> "
+     "Entry was removed! <a href='new'>New Entry</a> <a href='/list?id=#{$userid}'>All</a> "
 end
 
 #Give 'new' form with current user
@@ -200,7 +200,7 @@ get '/update' do
 	#gets ID to update from get 'update?id=#{document['_id']}''
 	id = params[:id]
 	#find ID in database and convert to array
-	persons = db['namen'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
+	persons = db["#{$userid}"].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
 	#convert array database object to hash entry
 	person = persons[0]
 	#debugging on console
@@ -238,16 +238,16 @@ post '/update' do
 	     if 
 		    ((vorname != "") && (nachname != "")) && (vorname.match(/[A-Za-z\s]+/) && nachname.match(/[A-Za-z\s]+/)) && (nummer != "") && (nummer.match(/[0-9]+/))
 		     #find correlating database entry and convert to hash object
-			persons = db['namen'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
+			persons = db["#{$userid}"].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
 			person = persons[0]
 			#fill hash with new names from form
 			person["vorname"] = vorname.downcase.split(" ").map(&:capitalize).join(" ")
 			person["nachname"] = nachname.downcase.split(" ").map(&:capitalize).join(" ")
 			person["nummer"] = nummer.downcase.split(" ").map(&:capitalize).join(" ")
 			#save new entries from person hash to database
-			db['namen'].save(person)
+			db["#{$userid}"].save(person)
 			#updated message
-		     "#{nachname}, #{vorname},#{nummer} has been updated! <a href='new'>New</a> <a href='/'>All</a> "
+		     "#{nachname}, #{vorname},#{nummer} has been updated! <a href='new'>New</a> <a href='/list?id=#{$userid}'>All</a> "
 	 	elsif 
 	 		((vorname != "") && (nachname != "") && (nummer != "")) != true
 	 		"Please fill in all required fields! <a href='new'>New Entry</a>"
