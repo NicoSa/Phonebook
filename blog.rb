@@ -118,7 +118,7 @@ post '/signup' do
 	   		user = db['users'].find({:nickname => nickname}).to_a
 	   		puts user
 	   		#successful entry message
-	   		"Successfully signed up! You did great why don´t get some #{favfood} or watch some #{favseries}?<br><a href='login'>Login</a>"
+	   		"Successfully signed up! You did great why don´t you get some #{favfood} or watch some #{favseries}?<br><a href='login'>Login</a>"
 	   		
 	 	end
 
