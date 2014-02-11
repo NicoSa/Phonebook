@@ -4,7 +4,7 @@ require 'mongo'
 require 'bson'
 require 'uri'
 require 'digest'
-
+require 'securerandom'
 
 
 #is for output in the console using foreman start
@@ -32,8 +32,29 @@ post '/login' do
 	#collect data from get
 	nickname = params[:nickname]
     password = params[:password]
-    #hashes the password
-    password = Digest::MD5.hexdigest("#{password}")
+    nickname.gsub!(/\s+/, "")
+    password.gsub!(/\s+/, "")
+    
+    users = db['users'].find({:nickname => nickname}).to_a
+    if users.size == 0
+    	return "User not found<br><a href='login'>Login</a>"
+    end
+    user = users[0]
+    puts user
+    salt = user["salt"]
+   	saltedPassword = password + salt
+   	hash = Digest::MD5.hexdigest(saltedPassword)
+   	puts hash
+ 	savedhash = user["password"]
+ 	puts savedhash
+    userid = user["_id"]
+ 	if hash == savedhash
+ 		redirect "/list?id=#{userid}"
+ 	else
+ 		"User not found<br><a href='login'>Login</a>"
+ 	end
+
+=begin
     #debugging
     puts nickname
     puts password
@@ -41,7 +62,7 @@ post '/login' do
     nickname.gsub!(/\s+/, "")
     password.gsub!(/\s+/, "")
     #is there a username like that in our database?
-	user = db['users'].find({ '$and' => [{:nickname => nickname}, {:password => password}]} ).to_a
+	user = db['users'].find({ '$and' => [{:nickname => nickname}, {:password => hash}]} ).to_a
 	#debugging
 	puts user
 	#so we can create var thisid
@@ -62,7 +83,7 @@ post '/login' do
 			#If there´s no entry
 			"User not found<br><a href='login'>Login</a>"
 		end
-
+=end
 	
 end
 
@@ -112,11 +133,17 @@ post '/signup' do
 	 		#nick and password are there
 			(nickname != "") && (password != "")
 			#insert entries into database
-	   		password = Digest::MD5.hexdigest("#{password}")
-	   		user = db['users'].insert({:nickname => nickname, :password => password, :favseries => favseries, :favfood => favfood}).to_a
-	   		#debugging, show entry
-	   		user = db['users'].find({:nickname => nickname}).to_a
+			salt = SecureRandom.hex(50)
+			puts salt
+	   		saltedPassword = password + salt
+	   		puts saltedPassword
+	   		hash = Digest::MD5.hexdigest(saltedPassword)
+	   		puts hash
+	   		newuser = {:nickname => nickname, :password => hash, :salt => salt, :favseries => favseries, :favfood => favfood}
+	   		user = db['users'].insert(newuser).to_a
 	   		puts user
+#debugging, show entry
+	   		user = db['users'].find({:nickname => nickname}).to_a
 	   		#successful entry message
 	   		"Successfully signed up! You did great why don´t you get some #{favfood} or watch some #{favseries}?<br><a href='login'>Login</a>"
 	   		
@@ -151,6 +178,8 @@ get '/list' do
 	#returns the result
 	result
 end
+
+
 
 #searches for search term
 post '/search' do
