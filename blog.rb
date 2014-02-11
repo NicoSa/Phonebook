@@ -32,6 +32,7 @@ post '/login' do
 	#collect data from get
 	nickname = params[:nickname]
     password = params[:password]
+    #hashes the password
     password = Digest::MD5.hexdigest("#{password}")
     #debugging
     puts nickname
@@ -45,6 +46,7 @@ post '/login' do
 	puts user
 	#so we can create var thisid
 	id = user[0] 
+	
 	#if there is an entry in our database, redirect to /list and send ID
 		if 
 			user.size > 0
@@ -65,6 +67,7 @@ post '/login' do
 end
 
 get '/signup' do
+	
 	#Signup form
 	%{<h1>Signup</h1><form method = "post" action ="signup">
 	<input name="nickname" type="text" placeholder="Nickname" required maxlength="12"></input><br>
@@ -83,6 +86,7 @@ post '/signup' do
 	password = params[:password]
     favfood = params[:favfood]
     favseries = params[:favseries]
+    #hashes the password
     password = Digest::MD5.hexdigest("#{password}")
     #debugging, are they received?
 	puts nickname
@@ -93,7 +97,7 @@ post '/signup' do
    	user = db['users'].find({:nickname => nickname}).to_a
    	#if so, the console will output that hash
    	puts user
-	   	
+	 	
 	   	if 
 		   	#what pops up if nickname and password aren´t filled in
 	 		((nickname != "") && (password != "")) != true
@@ -118,8 +122,9 @@ post '/signup' do
 
 end
 
+#Welcome page linking to signup and login
 get '/' do
-	#Welcome page linking to signup and login
+	
 	'<center><h1>Welcome to your phonebook!</h1>
 	<a href="login">Login</a>
 	<a href="signup">Signup</a></center>'
@@ -127,6 +132,7 @@ end
 
 #List all users in collection 'namen' + delete & update link 
 get '/list' do
+
 	#gets id from login
 	$userid = params[:id]
 	#debugging, has id been passed?
@@ -146,7 +152,8 @@ end
 
 #searches for search term
 post '/search' do
-#get input from search in get '/'
+
+	#get input from search in get '/'
 	search = params[:tosearch]
 	#debugging
 	puts "Input was = #{search}"
@@ -181,13 +188,14 @@ post '/search' do
 			end
 		
 		end
-#What´s gonna be on the search result screen
-"Number of entries found: #{entrysize}<br><br>#{found}<a href='/list?id=#{$userid}'>Back</a>"
+	#What´s gonna be on the search result screen
+	"Number of entries found: #{entrysize}<br><br>#{found}<a href='/list?id=#{$userid}'>Back</a>"
 
 end
 
 #Opens form to fill in names 
 get '/new' do
+	
 	#renders our form in html and sends it to post '/new'
 	'<form method="post" action="new">
 		<input name="vorname" type="text" placeholder="First name" required pattern="[A-Za-z\s]+"></input><br>
@@ -199,7 +207,8 @@ end
 
 #Adds new user to database and confirms it
 post '/new' do
-#set variables for data from form
+	
+	#set variables for data from form
      vorname = params[:vorname]
      nachname = params[:nachname]
      nummer = params[:nummer]
@@ -224,6 +233,7 @@ end
 
 #Delete a user from database
 get '/delete' do
+    
     #gets id to delete from get '/delete?id=#{document['_id']}'
     id = params[:id]
     vorname = params[:vorname]
