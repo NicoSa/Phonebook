@@ -16,6 +16,7 @@ db = Mongo::Connection.new(dbConfig.host, dbConfig.port).db(db_name)
 db.authenticate(dbConfig.user, dbConfig.password) unless (dbConfig.user.nil? || dbConfig.user.nil?)
 
 get '/login' do
+	#login form that sends data to post
 	%{<h1>Login</h1><form method = "post" action ="login">
 	<input name="nickname" type="text" placeholder="Nickname" required maxlength="12"></input><br>
 	<input name="password" type="password" placeholder="Password" required maxlength="12"></input><br>
@@ -26,26 +27,34 @@ get '/login' do
 end
 
 post '/login' do
+	#collect data from get
 	nickname = params[:nickname]
     password = params[:password]
+    #debugging
     puts nickname
     puts password
+    #make spaces irrelevant
     nickname.gsub!(/\s+/, "")
     password.gsub!(/\s+/, "")
+    #is there a username like that in our database?
 	user = db['users'].find({ '$and' => [{:nickname => nickname}, {:password => password}]} ).to_a
 	#debugging
 	puts user
+	#so we can create var thisid
 	id = user[0] 
-	
+	#if there is an entry in our database, redirect to /list and send ID
 		if 
 			user.size > 0
 			thisid = id["_id"]
 			#debugging
 			puts thisid
 			puts "User found in if"
+			#redirect to list with ID
 			redirect "/list?id=#{thisid}"
 		else
+			#debugging
 			puts "User not found in else"
+			#If there´s no entry
 			"User not found<br><a href='login'>Login</a>"
 		end
 
@@ -53,6 +62,7 @@ post '/login' do
 end
 
 get '/signup' do
+	#Signup form
 	%{<h1>Signup</h1><form method = "post" action ="signup">
 	<input name="nickname" type="text" placeholder="Nickname" required maxlength="12"></input><br>
 	<input name="password" type="password" placeholder="Password" required maxlength="12"></input><br>
@@ -64,31 +74,39 @@ get '/signup' do
 end
 
 post '/signup' do
+	#catch all entries from form
 	nickname = params[:nickname] 
     password = params[:password]
     favfood = params[:favfood]
     favseries = params[:favseries]
-    #favorite = params[:favorite]
+    #debugging, are they received?
 	puts nickname
 	puts password
 	puts favfood
 	puts favseries
-	#puts favorite
+	#Is that nickname in the users collection
    	user = db['users'].find({:nickname => nickname}).to_a
+   	#if so, the console will output that hash
    	puts user
 	   	
 	   	if 
-		   	#if a field is not filled
+		   	#what pops up if nickname and password aren´t filled in
 	 		((nickname != "") && (password != "")) != true
 	 		"Please fill in all required fields!<br><a href='signup'>Signup</a>"
 	   	elsif
+	   		#nickname already in the database
 	   		user.size > 0
 		   	"Please choose another Nickname!<br><a href='signup'>Signup</a>"
    		else 
+   			#not in the database yet
 	 		user.size <= 0
+	 		#nick and password are there
 			(nickname != "") && (password != "")
+			#insert entries into database
 	   		user = db['users'].insert({:nickname => nickname, :password => password, :favseries => favseries, :favfood => favfood})
+	   		#debugging, look at the new hash in console
 	   		puts user
+	   		#successful entry message
 	   		"Successfully signed up! You did great why don´t get some #{favfood} or watch some #{favseries}?<br><a href='login'>Login</a>"
 	   		
 	 	end
@@ -96,6 +114,7 @@ post '/signup' do
 end
 
 get '/' do
+	#Welcome page linking to signup and login
 	'<center><h1>Welcome to your phonebook!</h1>
 	<a href="login">Login</a>
 	<a href="signup">Signup</a></center>'
