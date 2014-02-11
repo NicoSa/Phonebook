@@ -72,8 +72,8 @@ get '/signup' do
 	%{<h1>Signup</h1><form method = "post" action ="signup">
 	<input name="nickname" type="text" placeholder="Nickname" required maxlength="12"></input><br>
 	<input name="password" type="password" placeholder="Password" required maxlength="12"></input><br>
-	<input name="favfood" type="text" placeholder="Favorite Food" maxlength="30"></input><br>
-	<input name="favseries" type="text" placeholder="Favorite Series" maxlength="30"></input><br>
+	<input name="favfood" type="text" placeholder="Favorite Food" required maxlength="30"></input><br>
+	<input name="favseries" type="text" placeholder="Favorite Series" required maxlength="30"></input><br>
 	<button>Sign up!</button>
 	</form>
 	<br><a href='/'>Back</a>}
@@ -87,7 +87,7 @@ post '/signup' do
     favfood = params[:favfood]
     favseries = params[:favseries]
     #hashes the password
-    password = Digest::MD5.hexdigest("#{password}")
+    
     #debugging, are they received?
 	puts nickname
 	puts password
@@ -97,7 +97,7 @@ post '/signup' do
    	user = db['users'].find({:nickname => nickname}).to_a
    	#if so, the console will output that hash
    	puts user
-	 	
+	
 	   	if 
 		   	#what pops up if nickname and password aren´t filled in
 	 		((nickname != "") && (password != "")) != true
@@ -112,8 +112,10 @@ post '/signup' do
 	 		#nick and password are there
 			(nickname != "") && (password != "")
 			#insert entries into database
-	   		user = db['users'].insert({:nickname => nickname, :password => password, :favseries => favseries, :favfood => favfood})
-	   		#debugging, look at the new hash in console
+	   		password = Digest::MD5.hexdigest("#{password}")
+	   		user = db['users'].insert({:nickname => nickname, :password => password, :favseries => favseries, :favfood => favfood}).to_a
+	   		#debugging, show entry
+	   		user = db['users'].find({:nickname => nickname}).to_a
 	   		puts user
 	   		#successful entry message
 	   		"Successfully signed up! You did great why don´t get some #{favfood} or watch some #{favseries}?<br><a href='login'>Login</a>"
