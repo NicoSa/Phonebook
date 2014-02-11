@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    bcrypt-ruby (3.1.2)
     bson (1.9.2)
     mongo (1.9.2)
       bson (~> 1.9.2)
@@ -14,5 +15,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bcrypt-ruby
   mongo (= 1.9.2)
   sinatra (= 1.1.0)

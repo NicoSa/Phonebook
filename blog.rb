@@ -3,6 +3,7 @@ require 'sinatra'
 require 'mongo'
 require 'bson'
 require 'uri'
+require 'bcrypt'
 
 
 #is for output in the console using foreman start
@@ -16,8 +17,8 @@ db.authenticate(dbConfig.user, dbConfig.password) unless (dbConfig.user.nil? || 
 
 get '/login' do
 	%{<h1>Login</h1><form method = "post" action ="login">
-	<input name="nickname" type="text" placeholder="Nickname" required></input><br>
-	<input name="password" type="password" placeholder="Password" required></input><br>
+	<input name="nickname" type="text" placeholder="Nickname" required maxlength="12"></input><br>
+	<input name="password" type="password" placeholder="Password" required maxlength="12"></input><br>
 	<button>Login!</button>
 	</form>
 	<br><a href='/'>Back</a>}
@@ -29,21 +30,22 @@ post '/login' do
     password = params[:password]
     puts nickname
     puts password
+    nickname.gsub!(/\s+/, "")
+    password.gsub!(/\s+/, "")
 	user = db['users'].find({ '$and' => [{:nickname => nickname}, {:password => password}]} ).to_a
 	#debugging
 	puts user
 	id = user[0] 
-	thisid = id["_id"]
-	#debugging
-	puts thisid
-		
+	
 		if 
 			user.size > 0
-			puts "User found"
-			
+			thisid = id["_id"]
+			#debugging
+			puts thisid
+			puts "User found in if"
 			redirect "/list?id=#{thisid}"
 		else
-			user.size <= 0
+			puts "User not found in else"
 			"User not found<br><a href='login'>Login</a>"
 		end
 
@@ -52,30 +54,43 @@ end
 
 get '/signup' do
 	%{<h1>Signup</h1><form method = "post" action ="signup">
-	<input name="nickname" type="text" placeholder="Nickname" required></input><br>
-	<input name="password" type="password" placeholder="Password" required></input><br>
+	<input name="nickname" type="text" placeholder="Nickname" required maxlength="12"></input><br>
+	<input name="password" type="password" placeholder="Password" required maxlength="12"></input><br>
+	<input name="favfood" type="text" placeholder="Favorite Food" maxlength="30"></input><br>
+	<input name="favseries" type="text" placeholder="Favorite Series" maxlength="30"></input><br>
 	<button>Sign up!</button>
 	</form>
 	<br><a href='/'>Back</a>}
 end
 
 post '/signup' do
-	nickname = params[:nickname]
+	nickname = params[:nickname] 
     password = params[:password]
+    favfood = params[:favfood]
+    favseries = params[:favseries]
     #favorite = params[:favorite]
 	puts nickname
 	puts password
+	puts favfood
+	puts favseries
 	#puts favorite
-   		if 
-		    (nickname != "") && (password != "")
-		    user = db['users'].insert({:nickname => nickname, :password => password})
-   			puts user
-   			"Successfully signed up!<br><a href='login'>Login</a>"
-   			
-	 	else 
-	 		#if a field is not filled
+   	user = db['users'].find({:nickname => nickname}).to_a
+   	puts user
+	   	
+	   	if 
+		   	#if a field is not filled
 	 		((nickname != "") && (password != "")) != true
 	 		"Please fill in all required fields!<br><a href='signup'>Signup</a>"
+	   	elsif
+	   		user.size > 0
+		   	"Please choose another Nickname!<br><a href='signup'>Signup</a>"
+   		else 
+	 		user.size <= 0
+			(nickname != "") && (password != "")
+	   		user = db['users'].insert({:nickname => nickname, :password => password, :favseries => favseries, :favfood => favfood})
+	   		puts user
+	   		"Successfully signed up! You did great why don´t get some #{favfood} or watch some #{favseries}?<br><a href='login'>Login</a>"
+	   		
 	 	end
 
 end
@@ -91,7 +106,7 @@ get '/list' do
 	#gets id from login
 	$userid = params[:id]
 	#debugging, has id been passed?
-	puts $userid
+	puts $userid + " in list"
 	#reads collection 'namen' & transforms into array
 	telefonbuch = db["#{$userid}"].find.sort(:nachname => :asc).to_a
 	#result = apply block to every element in telefonbuch & join elements with break in between
