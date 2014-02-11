@@ -3,7 +3,8 @@ require 'sinatra'
 require 'mongo'
 require 'bson'
 require 'uri'
-require 'bcrypt'
+require 'digest'
+
 
 
 #is for output in the console using foreman start
@@ -31,6 +32,7 @@ post '/login' do
 	#collect data from get
 	nickname = params[:nickname]
     password = params[:password]
+    password = Digest::MD5.hexdigest("#{password}")
     #debugging
     puts nickname
     puts password
@@ -75,11 +77,13 @@ get '/signup' do
 end
 
 post '/signup' do
+
 	#catch all entries from form
 	nickname = params[:nickname] 
 	password = params[:password]
     favfood = params[:favfood]
     favseries = params[:favseries]
+    password = Digest::MD5.hexdigest("#{password}")
     #debugging, are they received?
 	puts nickname
 	puts password
