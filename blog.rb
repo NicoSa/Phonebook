@@ -60,7 +60,7 @@ post '/login' do
  	#gets userid
     userid = user["_id"]
     #if savedhash and hash are identical, redirect to list, if not wrong password!
- 	if hash == savedhash
+ 	if hash == savedHash
  		redirect "/list?id=#{userid}"
  	else
  		"Wrong password!<br><a href='login'>Login</a>"
