@@ -88,8 +88,6 @@ post '/signup' do
 	password = params[:password]
     favfood = params[:favfood]
     favseries = params[:favseries]
-    #hashes the password
-    
     #debugging, are they received?
 	puts nickname
 	puts password
@@ -113,18 +111,24 @@ post '/signup' do
 	 		user.size <= 0
 	 		#nick and password are there
 			(nickname != "") && (password != "")
-			#insert entries into database
+			#generate salt
 			salt = SecureRandom.hex(50)
+			#debug
 			puts salt
+			#add salt to password
 	   		saltedPassword = password + salt
+	   		#debug
 	   		puts saltedPassword
+	   		#create hash out of salt and password
 	   		hash = Digest::MD5.hexdigest(saltedPassword)
+	   		#debug
 	   		puts hash
+	   		#new user hash
 	   		newuser = {:nickname => nickname, :password => hash, :salt => salt, :favseries => favseries, :favfood => favfood}
+	   		#insert newuser into our db
 	   		user = db['users'].insert(newuser).to_a
+	   		#debug
 	   		puts user
-#debugging, show entry
-	   		user = db['users'].find({:nickname => nickname}).to_a
 	   		#successful entry message
 	   		"Successfully signed up! You did great why don´t you get some #{favfood} or watch some #{favseries}?<br><a href='login'>Login</a>"
 	   		
