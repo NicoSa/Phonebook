@@ -27,6 +27,7 @@ get '/login' do
 end
 
 post '/login' do
+
 	#collect data from get
 	nickname = params[:nickname]
     password = params[:password]
@@ -76,7 +77,7 @@ end
 post '/signup' do
 	#catch all entries from form
 	nickname = params[:nickname] 
-    password = params[:password]
+	password = params[:password]
     favfood = params[:favfood]
     favseries = params[:favseries]
     #debugging, are they received?
