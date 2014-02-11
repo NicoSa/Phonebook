@@ -32,59 +32,40 @@ post '/login' do
 	#collect data from get
 	nickname = params[:nickname]
     password = params[:password]
+    #kills whitespace
     nickname.gsub!(/\s+/, "")
     password.gsub!(/\s+/, "")
-    
+    #does nickname exist?
     users = db['users'].find({:nickname => nickname}).to_a
+    #if it doesn´t exist gives user not found
     if users.size == 0
     	return "User not found<br><a href='login'>Login</a>"
     end
+    #pick up user
     user = users[0]
+    #debug
     puts user
+    #gets salt from user
     salt = user["salt"]
+    #melts salt and password
    	saltedPassword = password + salt
+   	#hashes password and salt
    	hash = Digest::MD5.hexdigest(saltedPassword)
+   	#debug
    	puts hash
- 	savedhash = user["password"]
- 	puts savedhash
+   	#our saved hash
+ 	savedHash = user["password"]
+ 	#debug
+ 	puts savedHash
+ 	#gets userid
     userid = user["_id"]
+    #if savedhash and hash are identical, redirect to list, if not wrong password!
  	if hash == savedhash
  		redirect "/list?id=#{userid}"
  	else
- 		"User not found<br><a href='login'>Login</a>"
+ 		"Wrong password!<br><a href='login'>Login</a>"
  	end
 
-=begin
-    #debugging
-    puts nickname
-    puts password
-    #make spaces irrelevant
-    nickname.gsub!(/\s+/, "")
-    password.gsub!(/\s+/, "")
-    #is there a username like that in our database?
-	user = db['users'].find({ '$and' => [{:nickname => nickname}, {:password => hash}]} ).to_a
-	#debugging
-	puts user
-	#so we can create var thisid
-	id = user[0] 
-	
-	#if there is an entry in our database, redirect to /list and send ID
-		if 
-			user.size > 0
-			thisid = id["_id"]
-			#debugging
-			puts thisid
-			puts "User found in if"
-			#redirect to list with ID
-			redirect "/list?id=#{thisid}"
-		else
-			#debugging
-			puts "User not found in else"
-			#If there´s no entry
-			"User not found<br><a href='login'>Login</a>"
-		end
-=end
-	
 end
 
 get '/signup' do
