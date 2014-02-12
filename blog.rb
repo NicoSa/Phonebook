@@ -19,6 +19,7 @@ db = Mongo::Connection.new(dbConfig.host, dbConfig.port).db(db_name)
 db.authenticate(dbConfig.user, dbConfig.password) unless (dbConfig.user.nil? || dbConfig.user.nil?)
 
 get '/login' do
+
 	#login form that sends data to post
 	%{<h1>Login</h1><form method = "post" action ="login">
 	<input name="nickname" type="text" placeholder="Nickname" required maxlength="12"></input><br>
@@ -38,7 +39,7 @@ post '/login' do
     nickname.gsub!(/\s+/, "")
     password.gsub!(/\s+/, "")
     #does nickname exist?
-    users = db['users'].find({:nickname => nickname}).to_a
+    users = db['users'].find( { :nickname => nickname } ).to_a
     #if it doesn´t exist gives user not found
     if users.size == 0
     	return "User not found<br><a href='login'>Login</a>"
@@ -79,8 +80,8 @@ get '/signup' do
 	<input name="favfood" type="text" placeholder="Favorite Food" required maxlength="30"></input><br>
 	<input name="favseries" type="text" placeholder="Favorite Series" required maxlength="30"></input><br>
 	<button>Sign up!</button>
-	</form>
-	<br><a href='/'>Back</a>}
+	</form><br><a href='/'>Back</a>}
+
 end
 
 post '/signup' do
@@ -98,24 +99,21 @@ post '/signup' do
 	puts favseries
 	puts timestamp
 	#Is that nickname in the users collection
-   	user = db['users'].find({:nickname => nickname}).to_a
+   	user = db['users'].find( { :nickname => nickname } ).to_a
    	#if so, the console will output that hash
    	puts user
-	
-	   	if 
-		   	#what pops up if nickname and password aren´t filled in
-	 		((nickname != "") && (password != "")) != true
+
+		#what pops up if nickname and password aren´t filled in
+	   	if ((nickname != "") && (password != "")) != true
+
 	 		"Please fill in all required fields!<br><a href='signup'>Signup</a>"
-	   	elsif
-	   		#nickname already in the database
-	   		user.size > 0
+	 	#nickname already in the database	
+	   	elsif user.size > 0
+		   	
 		   	"Please choose another Nickname!<br><a href='signup'>Signup</a>"
-   		else 
-   			#not in the database yet
-	 		user.size <= 0
-	 		#nick and password are there
-			(nickname != "") && (password != "")
-			#generate salt
+		#not in the database yet nick and password are there  	
+   		else (user.size <= 0) && ((nickname != "") && (password != ""))
+	 		#generate salt
 			salt = SecureRandom.hex(50)
 			#debug
 			puts salt
@@ -128,15 +126,14 @@ post '/signup' do
 	   		#debug
 	   		puts hash
 	   		#new user hash
-	   		newuser = {:nickname => nickname, :password => hash, :salt => salt, :favseries => favseries, :favfood => favfood, :timestamp => timestamp}
+	   		newuser = { :nickname => nickname, :password => hash, :salt => salt, :favseries => favseries, :favfood => favfood, :timestamp => timestamp }
 	   		#insert newuser into our db
 	   		user = db['users'].insert(newuser).to_a
 	   		#debug
 	   		puts user
 	   		#successful entry message
 	   		"Successfully signed up! You did great why don´t you get some #{favfood} or watch some #{favseries}?<br><a href='login'>Login</a>"
-	   		
-	 	end
+	   	end
 
 end
 
@@ -146,6 +143,7 @@ get '/' do
 	'<center><h1>Welcome to your phonebook!</h1>
 	<a href="login">Login</a>
 	<a href="signup">Signup</a></center>'
+
 end
 
 #List all users in collection 'namen' + delete & update link 
@@ -158,7 +156,7 @@ get '/list' do
 	#reads collection 'namen' & transforms into array
 	telefonbuch = db["#{$userid}"].find.sort(:nachname => :asc).to_a
 	#result = apply block to every element in telefonbuch & join elements with break in between
-	result = telefonbuch.map{|document| "<a href='delete?id=#{document['_id']}'>Delete</a>||<a href='update?id=#{document['_id']}'>Update</a>||#{document['nachname']}, #{document['vorname']}, #{document['nummer']} "}.join("<br>")
+	result = telefonbuch.map { |document| "<a href='delete?id=#{document['_id']}'>Delete</a>||<a href='update?id=#{document['_id']}'>Update</a>||#{document['nachname']}, #{document['vorname']}, #{document['nummer']} " }.join("<br>")
 	#Adds link to get '/new'
 	result = result + %{<br><br><a href="new">New Entry</a><br><br><form method = "post" action ="search">
 	<input name="tosearch" type="text" placeholder="Search"></input>
@@ -166,6 +164,7 @@ get '/list' do
 	<br><br><a href="/">Logout</a><br><br><a href='/deleteaccount?id=#{$userid}'>Delete Account</a></form>}
 	#returns the result
 	result
+
 end
 
 
@@ -178,10 +177,9 @@ post '/search' do
 	#debugging
 	puts "Input was = #{search}"
 	#search for search entry in our database
-	entries = db["#{$userid}"].find({'$or' => [{:vorname => /#{Regexp.escape(search)}/ix}, {:nachname => /#{Regexp.escape(search)}/ix}, {:nummer => /#{Regexp.escape(search)}/ix}]}).to_a 
+	entries = db["#{$userid}"].find( { '$or' => [{:vorname => /#{Regexp.escape(search)}/ix}, {:nachname => /#{Regexp.escape(search)}/ix}, {:nummer => /#{Regexp.escape(search)}/ix}] } ).to_a 
 	#converts number of entries into number
 	entrysize = entries.size
-
 	#x is set to zegit ro cause so the while loop starts circling at zero
 	x = 0
 	#setting empty string found
@@ -223,6 +221,7 @@ get '/new' do
 		<input name="nummer"  type="text" placeholder="Phone number" pattern="[0-9]+" required></input>
 		<button>Save</button>
 	</form>'
+
 end
 
 #Adds new user to database and confirms it
@@ -233,22 +232,22 @@ post '/new' do
      nachname = params[:nachname]
      nummer = params[:nummer]
      #check if fields are filled in
-	     if 
-		    ((vorname != "") && (nachname != "")) && (vorname.match(/[^0-9\s]/) && nachname.match(/[^0-9\s]/)) && (nummer != "") && (nummer.match(/[^A-Za-z]/))
+	    if ((vorname != "") && (nachname != "")) && (vorname.match(/[^0-9\s]/) && nachname.match(/[^0-9\s]/)) && (nummer != "") && (nummer.match(/[^A-Za-z]/))
 		     #for debugging in console
 		     puts "#{params}"
 		     #feed collection namen inside database with the values passed from get '/new' via params
-		     db["#{$userid}"].insert({:vorname=> vorname.downcase.split(" ").map(&:capitalize).join(" "), :nachname=> nachname.downcase.split(" ").map(&:capitalize).join(" "), :nummer => nummer})
+		     db["#{$userid}"].insert( { :vorname=> vorname.downcase.split(" ").map(&:capitalize).join(" "), :nachname=> nachname.downcase.split(" ").map(&:capitalize).join(" "), :nummer => nummer } )
 		     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new' >New Entry</a> <a href='/list?id=#{$userid}'>All</a> "
-	 	elsif 
-	 		#if a field is not filled
-	 		((vorname != "") && (nachname != "") && (nummer != "")) != true
+	 	#if a field is not filled
+	 	elsif ((vorname != "") && (nachname != "") && (nummer != "")) != true
+
 	 		"Please fill in all required fields! <a href='new'>New Entry</a>"
-	 	else
-	 		#if there are no numbers in the number field
-	 		nummer.match(/[0-9]+/) != true
-	 		"Wrong format! Please enter digits for a Phone number and letters for your name! <a href='new'>New Entry</a>"
-	 	end
+		#if there are no numbers in the number field
+	 	else nummer.match(/[0-9]+/) != true
+
+			"Wrong format! Please enter digits for a Phone number and letters for your name! <a href='new'>New Entry</a>"
+		end
+
 end
 
 #Delete a user from database
@@ -259,17 +258,19 @@ get '/delete' do
     vorname = params[:vorname]
      nachname = params[:nachname]
     #removes entry with that id from database
-	db["#{$userid}"].remove({:_id=> BSON::ObjectId.from_string(id)})
+	db["#{$userid}"].remove( { :_id=> BSON::ObjectId.from_string(id) } )
 	#confirms removal and provides links to get '/new' and get '/'
      "Entry was removed! <a href='new'>New Entry</a> <a href='/list?id=#{$userid}'>All</a> "
+
 end
 
 #Give 'new' form with current user
 get '/update' do
+
 	#gets ID to update from get 'update?id=#{document['_id']}''
 	id = params[:id]
 	#find ID in database and convert to array
-	persons = db["#{$userid}"].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
+	persons = db["#{$userid}"].find( { :_id=> BSON::ObjectId.from_string(id) } ).to_a
 	#convert array database object to hash entry
 	person = persons[0]
 	#debugging on console
@@ -294,6 +295,7 @@ end
 
 #updates database with new entry
 post '/update' do
+
 	#debugging
 	print params
 	#gets ID to update from get 'update?id=#{id}'
@@ -304,10 +306,9 @@ post '/update' do
 	nummer = params[:nummer]
 	     
 	     #check if fields are filled in
-	     if 
-		    ((vorname != "") && (nachname != "")) && (vorname.match(/[A-Za-z\s]+/) && nachname.match(/[A-Za-z\s]+/)) && (nummer != "") && (nummer.match(/[0-9]+/))
-		     #find correlating database entry and convert to hash object
-			persons = db["#{$userid}"].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
+	    if ((vorname != "") && (nachname != "")) && (vorname.match(/[A-Za-z\s]+/) && nachname.match(/[A-Za-z\s]+/)) && (nummer != "") && (nummer.match(/[0-9]+/))
+		    #find correlating database entry and convert to hash object
+			persons = db["#{$userid}"].find( { :_id=> BSON::ObjectId.from_string(id) } ).to_a
 			person = persons[0]
 			#fill hash with new names from form
 			person["vorname"] = vorname.downcase.split(" ").map(&:capitalize).join(" ")
@@ -317,24 +318,24 @@ post '/update' do
 			db["#{$userid}"].save(person)
 			#updated message
 		     "#{nachname}, #{vorname},#{nummer} has been updated! <a href='new'>New</a> <a href='/list?id=#{$userid}'>All</a> "
-	 	elsif 
-	 		((vorname != "") && (nachname != "") && (nummer != "")) != true
-	 		"Please fill in all required fields! <a href='new'>New Entry</a>"
-	 	else
-	 		nummer.match(/[0-9]+/) != true
-		"Wrong format! Please enter digits for a Phone number and letters for your name! <a href='new'>New Entry</a>"	 	
-		end
+	 	elsif ((vorname != "") && (nachname != "") && (nummer != "")) != true
 
+	 		"Please fill in all required fields! <a href='new'>New Entry</a>"
+	 	else nummer.match(/[0-9]+/) != true
+
+			"Wrong format! Please enter digits for a Phone number and letters for your name! <a href='new'>New Entry</a>"	 	
+		end
 
 end
 
 get '/deleteaccount' do
+
 	#get ID from list
 	id = params[:id]
 	#debug
 	puts id
 	#find user
-	persons = db['users'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
+	persons = db['users'].find( { :_id=> BSON::ObjectId.from_string(id) } ).to_a
 	#debug
 	puts persons
 	#get single array
@@ -352,11 +353,12 @@ get '/deleteaccount' do
 end
 
 post '/deleteaccount' do
+
 	#id and password from get
 	id = params[:id]
 	password = params[:password]
 	#find user
-	users = db['users'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
+	users = db['users'].find( { :_id=> BSON::ObjectId.from_string(id) } ).to_a
 	user = users[0]
 	#get salt from users
 	salt = user["salt"]
@@ -370,14 +372,13 @@ post '/deleteaccount' do
  	savedHash = user["password"]
  	#if correct password was entered, delete user and his database
  	if hash == savedHash
- 		db['users'].remove({:_id=> BSON::ObjectId.from_string(id)})
+
+ 		db['users'].remove( { :_id=> BSON::ObjectId.from_string(id) } )
  		db["#{id}"].drop()
 		"Deleted your account!<br><a href='/'>Byebye</a>"
  	else
+ 		
  		"Wrong password!<br><a href='deleteaccount?id=#{id}'>Back</a>"
  	end
 
-
-	
-	
 end
