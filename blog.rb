@@ -156,10 +156,10 @@ get '/list' do
 	#result = apply block to every element in telefonbuch & join elements with break in between
 	result = telefonbuch.map{|document| "<a href='delete?id=#{document['_id']}'>Delete</a>||<a href='update?id=#{document['_id']}'>Update</a>||#{document['nachname']}, #{document['vorname']}, #{document['nummer']} "}.join("<br>")
 	#Adds link to get '/new'
-	result = result + '<br><br><a href="new">New Entry</a>' + '<br><br><form method = "post" action ="search">
+	result = result + %{<br><br><a href="new">New Entry</a><br><br><form method = "post" action ="search">
 	<input name="tosearch" type="text" placeholder="Search"></input>
 	<button>Go search!</button>
-	<br><br><a href="/">Logout</a></form>'
+	<br><br><a href="/">Logout</a><br><br><a href='/deleteaccount?id=#{$userid}'>Delete Account</a></form>}
 	#returns the result
 	result
 end
@@ -324,6 +324,55 @@ post '/update' do
 
 end
 
+get '/deleteaccount' do
+	#get ID from list
+	id = params[:id]
+	#debug
+	puts id
+	#find user
+	persons = db['users'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
+	#debug
+	puts persons
+	#get single array
+	person = persons[0]
+	#debug
+	puts person
+	#get nickname from user
+	nickname = person["nickname"]
+	#password and delete form
+	%{If you really want to delete your account #{nickname}, please type your password and press delete!<br><br><form method = "post" action ="deleteaccount?id=#{id}">
+	<input name="password" type="password" placeholder="Password" required maxlength="12"></input><br>
+	<button>Delete!</button>
+	</form>}
+
+end
+
+post '/deleteaccount' do
+	#id and password from get
+	id = params[:id]
+	password = params[:password]
+	#find user
+	users = db['users'].find({:_id=> BSON::ObjectId.from_string(id)}).to_a
+	user = users[0]
+	#get salt from users
+	salt = user["salt"]
+    #melts password and salt
+   	saltedPassword = password + salt
+   	#hashes password and salt
+   	hash = Digest::MD5.hexdigest(saltedPassword)
+   	#debug
+   	puts hash
+   	#our saved hash
+ 	savedHash = user["password"]
+ 	if hash == savedHash
+ 		db['users'].remove({:_id=> BSON::ObjectId.from_string(id)})
+ 		db["#{id}"].remove()
+		"Deleted your account!<br><a href='/'>Byebye</a>"
+ 	else
+ 		"Wrong password!<br><a href='deleteaccount?id=#{id}'>Back</a>"
+ 	end
 
 
-
+	
+	
+end
