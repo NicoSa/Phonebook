@@ -364,6 +364,7 @@ post '/deleteaccount' do
    	puts hash
    	#our saved hash
  	savedHash = user["password"]
+ 	#if correct password was entered, delete user and his database
  	if hash == savedHash
  		db['users'].remove({:_id=> BSON::ObjectId.from_string(id)})
  		db["#{id}"].remove()
