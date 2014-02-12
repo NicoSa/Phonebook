@@ -90,11 +90,13 @@ post '/signup' do
 	password = params[:password]
     favfood = params[:favfood]
     favseries = params[:favseries]
+    timestamp = Time.now
     #debugging, are they received?
 	puts nickname
 	puts password
 	puts favfood
 	puts favseries
+	puts timestamp
 	#Is that nickname in the users collection
    	user = db['users'].find({:nickname => nickname}).to_a
    	#if so, the console will output that hash
@@ -126,7 +128,7 @@ post '/signup' do
 	   		#debug
 	   		puts hash
 	   		#new user hash
-	   		newuser = {:nickname => nickname, :password => hash, :salt => salt, :favseries => favseries, :favfood => favfood}
+	   		newuser = {:nickname => nickname, :password => hash, :salt => salt, :favseries => favseries, :favfood => favfood, :timestamp => timestamp}
 	   		#insert newuser into our db
 	   		user = db['users'].insert(newuser).to_a
 	   		#debug
