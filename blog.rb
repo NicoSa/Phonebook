@@ -6,6 +6,8 @@ require 'uri'
 require 'digest'
 require 'securerandom'
 
+enable :sessions
+
 
 #is for output in the console using foreman start
 $stdout.sync = true 
@@ -367,7 +369,7 @@ post '/deleteaccount' do
  	#if correct password was entered, delete user and his database
  	if hash == savedHash
  		db['users'].remove({:_id=> BSON::ObjectId.from_string(id)})
- 		db["#{id}"].remove()
+ 		db["#{id}"].drop()
 		"Deleted your account!<br><a href='/'>Byebye</a>"
  	else
  		"Wrong password!<br><a href='deleteaccount?id=#{id}'>Back</a>"
