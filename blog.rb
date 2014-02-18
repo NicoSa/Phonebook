@@ -61,10 +61,10 @@ post '/login' do
  	#debug
  	puts savedHash
  	#gets userid
-    userid = user["_id"]
+    session[:user_id] = user["_id"]
     #if savedhash and hash are identical, redirect to list, if not wrong password!
  	if hash == savedHash
- 		redirect "/list?id=#{userid}"
+ 		redirect "/list"
  	else
  		"Wrong password!<br><a href='login'>Login</a>"
  	end
@@ -148,23 +148,26 @@ end
 
 #List all users in collection 'namen' + delete & update link 
 get '/list' do
-
+	puts session[:user_id]
+	if session[:user_id] != nil
 	#gets id from login
-	$userid = params[:id]
+	#$userid = params[:id]
 	#debugging, has id been passed?
-	puts $userid + " in list"
+	#puts $userid + " in list"
 	#reads collection 'namen' & transforms into array
-	telefonbuch = db["#{$userid}"].find.sort(:nachname => :asc).to_a
+	telefonbuch = db["#{session[:user_id]}"].find.sort(:nachname => :asc).to_a
 	#result = apply block to every element in telefonbuch & join elements with break in between
 	result = telefonbuch.map { |document| "<a href='delete?id=#{document['_id']}'>Delete</a>||<a href='update?id=#{document['_id']}'>Update</a>||#{document['nachname']}, #{document['vorname']}, #{document['nummer']} " }.join("<br>")
 	#Adds link to get '/new'
 	result = result + %{<br><br><a href="new">New Entry</a><br><br><form method = "post" action ="search">
 	<input name="tosearch" type="text" placeholder="Search"></input>
 	<button>Go search!</button>
-	<br><br><a href="/">Logout</a><br><br><a href='/deleteaccount?id=#{$userid}'>Delete Account</a></form>}
+	<br><br><a href="/">Logout</a><br><br><a href='/deleteaccount'>Delete Account</a></form>}
 	#returns the result
 	result
-
+	else
+		"There was an Error. You´ve been logged out!<a href='/'>Login</a>"
+	end
 end
 
 
@@ -177,7 +180,7 @@ post '/search' do
 	#debugging
 	puts "Input was = #{search}"
 	#search for search entry in our database
-	entries = db["#{$userid}"].find( { '$or' => [{:vorname => /#{Regexp.escape(search)}/ix}, {:nachname => /#{Regexp.escape(search)}/ix}, {:nummer => /#{Regexp.escape(search)}/ix}] } ).to_a 
+	entries = db["#{session[:user_id]}"].find( { '$or' => [{:vorname => /#{Regexp.escape(search)}/ix}, {:nachname => /#{Regexp.escape(search)}/ix}, {:nummer => /#{Regexp.escape(search)}/ix}] } ).to_a 
 	#converts number of entries into number
 	entrysize = entries.size
 	#x is set to zegit ro cause so the while loop starts circling at zero
@@ -207,7 +210,7 @@ post '/search' do
 		
 		end
 	#What´s gonna be on the search result screen
-	"Number of entries found: #{entrysize}<br><br>#{found}<a href='/list?id=#{$userid}'>Back</a>"
+	"Number of entries found: #{entrysize}<br><br>#{found}<a href='/list'>Back</a>"
 
 end
 
@@ -236,8 +239,8 @@ post '/new' do
 		     #for debugging in console
 		     puts "#{params}"
 		     #feed collection namen inside database with the values passed from get '/new' via params
-		     db["#{$userid}"].insert( { :vorname=> vorname.downcase.split(" ").map(&:capitalize).join(" "), :nachname=> nachname.downcase.split(" ").map(&:capitalize).join(" "), :nummer => nummer } )
-		     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new' >New Entry</a> <a href='/list?id=#{$userid}'>All</a> "
+		     db["#{session[:user_id]}"].insert( { :vorname=> vorname.downcase.split(" ").map(&:capitalize).join(" "), :nachname=> nachname.downcase.split(" ").map(&:capitalize).join(" "), :nummer => nummer } )
+		     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new' >New Entry</a> <a href='/list'>All</a> "
 	 	#if a field is not filled
 	 	elsif ((vorname != "") && (nachname != "") && (nummer != "")) != true
 
@@ -258,9 +261,9 @@ get '/delete' do
     vorname = params[:vorname]
      nachname = params[:nachname]
     #removes entry with that id from database
-	db["#{$userid}"].remove( { :_id=> BSON::ObjectId.from_string(id) } )
+	db["#{session[:user_id]}"].remove( { :_id=> BSON::ObjectId.from_string(id) } )
 	#confirms removal and provides links to get '/new' and get '/'
-     "Entry was removed! <a href='new'>New Entry</a> <a href='/list?id=#{$userid}'>All</a> "
+     "Entry was removed! <a href='new'>New Entry</a> <a href='/list'>All</a> "
 
 end
 
@@ -270,7 +273,7 @@ get '/update' do
 	#gets ID to update from get 'update?id=#{document['_id']}''
 	id = params[:id]
 	#find ID in database and convert to array
-	persons = db["#{$userid}"].find( { :_id=> BSON::ObjectId.from_string(id) } ).to_a
+	persons = db["#{session[:user_id]}"].find( { :_id=> BSON::ObjectId.from_string(id) } ).to_a
 	#convert array database object to hash entry
 	person = persons[0]
 	#debugging on console
@@ -308,16 +311,16 @@ post '/update' do
 	     #check if fields are filled in
 	    if ((vorname != "") && (nachname != "")) && (vorname.match(/[A-Za-z\s]+/) && nachname.match(/[A-Za-z\s]+/)) && (nummer != "") && (nummer.match(/[0-9]+/))
 		    #find correlating database entry and convert to hash object
-			persons = db["#{$userid}"].find( { :_id=> BSON::ObjectId.from_string(id) } ).to_a
+			persons = db["#{session[:user_id]}"].find( { :_id=> BSON::ObjectId.from_string(id) } ).to_a
 			person = persons[0]
 			#fill hash with new names from form
 			person["vorname"] = vorname.downcase.split(" ").map(&:capitalize).join(" ")
 			person["nachname"] = nachname.downcase.split(" ").map(&:capitalize).join(" ")
 			person["nummer"] = nummer.downcase.split(" ").map(&:capitalize).join(" ")
 			#save new entries from person hash to database
-			db["#{$userid}"].save(person)
+			db["#{session[:user_id]}"].save(person)
 			#updated message
-		     "#{nachname}, #{vorname},#{nummer} has been updated! <a href='new'>New</a> <a href='/list?id=#{$userid}'>All</a> "
+		     "#{nachname}, #{vorname},#{nummer} has been updated! <a href='new'>New</a> <a href='/list'>All</a> "
 	 	elsif ((vorname != "") && (nachname != "") && (nummer != "")) != true
 
 	 		"Please fill in all required fields! <a href='new'>New Entry</a>"
@@ -329,13 +332,14 @@ post '/update' do
 end
 
 get '/deleteaccount' do
+	puts session[:user_id]
+	
 
-	#get ID from list
-	id = params[:id]
 	#debug
-	puts id
+	
 	#find user
-	persons = db['users'].find( { :_id=> BSON::ObjectId.from_string(id) } ).to_a
+
+	persons = db['users'].find({:_id=> BSON::ObjectId.from_string("#{session[:user_id]}")}).to_a
 	#debug
 	puts persons
 	#get single array
@@ -344,21 +348,24 @@ get '/deleteaccount' do
 	puts person
 	#get nickname from user
 	nickname = person["nickname"]
+
 	#password and delete form
-	%{If you really want to delete your account #{nickname}, please type your password and press delete!<br><br><form method = "post" action ="deleteaccount?id=#{id}">
+	%{If you really want to delete your account #{nickname}, please type your password and press delete!<br><br><form method = "post" action ="deleteaccount">
 	<input name="password" type="password" placeholder="Password" required maxlength="12"></input><br>
 	<button>Delete!</button>
 	</form>}
+
+
 
 end
 
 post '/deleteaccount' do
 
 	#id and password from get
-	id = params[:id]
+	
 	password = params[:password]
 	#find user
-	users = db['users'].find( { :_id=> BSON::ObjectId.from_string(id) } ).to_a
+	users = db['users'].find( { :_id=> BSON::ObjectId.from_string("#{session[:user_id]}") } ).to_a
 	user = users[0]
 	#get salt from users
 	salt = user["salt"]
@@ -373,12 +380,12 @@ post '/deleteaccount' do
  	#if correct password was entered, delete user and his database
  	if hash == savedHash
 
- 		db['users'].remove( { :_id=> BSON::ObjectId.from_string(id) } )
- 		db["#{id}"].drop()
+ 		db['users'].remove( { :_id=> BSON::ObjectId.from_string("#{session[:user_id]}") } )
+ 		db["#{session[:user_id]}"].drop()
 		"Deleted your account!<br><a href='/'>Byebye</a>"
  	else
  		
- 		"Wrong password!<br><a href='deleteaccount?id=#{id}'>Back</a>"
+ 		"Wrong password!<br><a href='deleteaccount'>Back</a>"
  	end
 
 end
