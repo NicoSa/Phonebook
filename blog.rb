@@ -162,14 +162,18 @@ get '/list' do
 	result = result + %{<br><br><a href="new">New Entry</a><br><br><form method = "post" action ="search">
 	<input name="tosearch" type="text" placeholder="Search"></input>
 	<button>Go search!</button>
-	<br><br><a href="/">Logout</a><br><br><a href='/deleteaccount'>Delete Account</a></form>}
+	<br><br><a href="/logout">Logout</a><br><br><a href='/deleteaccount'>Delete Account</a></form>}
 	#returns the result
 	result
 	else
-		"There was an Error. You´ve been logged out!<a href='/'>Login</a>"
+		"You´re logged out!<br><a href='/'>Login</a>"
 	end
 end
 
+get '/logout' do
+	session[:user_id] = nil
+	redirect "/"
+end
 
 
 #searches for search term
