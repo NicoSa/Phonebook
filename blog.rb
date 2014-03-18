@@ -19,14 +19,16 @@ db = Mongo::Connection.new(dbConfig.host, dbConfig.port).db(db_name)
 db.authenticate(dbConfig.user, dbConfig.password) unless (dbConfig.user.nil? || dbConfig.user.nil?)
 
 get '/login' do
-
+	erb :login
 	#login form that sends data to post
+=begin
 	%{<h1>Login</h1><form method = "post" action ="login">
 	<input name="nickname" type="text" placeholder="Nickname" required maxlength="12"></input><br>
 	<input name="password" type="password" placeholder="Password" required maxlength="12"></input><br>
 	<button>Login!</button>
 	</form>
 	<br><a href='/'>Back</a>}
+=end
 
 end
 
@@ -72,16 +74,17 @@ post '/login' do
 end
 
 get '/signup' do
+	erb :signup
 	
 	#Signup form
-	%{<h1>Signup</h1><form method = "post" action ="signup">
+=begin	%{<h1>Signup</h1><form method = "post" action ="signup">
 	<input name="nickname" type="text" placeholder="Nickname" required maxlength="12"></input><br>
 	<input name="password" type="password" placeholder="Password" required maxlength="12"></input><br>
 	<input name="favfood" type="text" placeholder="Favorite Food" required maxlength="30"></input><br>
 	<input name="favseries" type="text" placeholder="Favorite Series" required maxlength="30"></input><br>
 	<button>Sign up!</button>
 	</form><br><a href='/'>Back</a>}
-
+=end
 end
 
 post '/signup' do
@@ -139,11 +142,12 @@ end
 
 #Welcome page linking to signup and login
 get '/' do
-	
-	'<center><h1>Welcome to your phonebook!</h1>
+	erb :index
+=begin
+'<center><h1>Welcome to your phonebook!</h1>
 	<a href="login">Login</a>
 	<a href="signup">Signup</a></center>'
-
+=end
 end
 
 #List all users in collection 'namen' + delete & update link 
