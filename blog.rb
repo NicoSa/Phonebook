@@ -21,14 +21,6 @@ db.authenticate(dbConfig.user, dbConfig.password) unless (dbConfig.user.nil? || 
 get '/login' do
 	erb :login
 	#login form that sends data to post
-=begin
-	%{<h1>Login</h1><form method = "post" action ="login">
-	<input name="nickname" type="text" placeholder="Nickname" required maxlength="12"></input><br>
-	<input name="password" type="password" placeholder="Password" required maxlength="12"></input><br>
-	<button>Login!</button>
-	</form>
-	<br><a href='/'>Back</a>}
-=end
 
 end
 
@@ -77,14 +69,7 @@ get '/signup' do
 	erb :signup
 	
 	#Signup form
-=begin	%{<h1>Signup</h1><form method = "post" action ="signup">
-	<input name="nickname" type="text" placeholder="Nickname" required maxlength="12"></input><br>
-	<input name="password" type="password" placeholder="Password" required maxlength="12"></input><br>
-	<input name="favfood" type="text" placeholder="Favorite Food" required maxlength="30"></input><br>
-	<input name="favseries" type="text" placeholder="Favorite Series" required maxlength="30"></input><br>
-	<button>Sign up!</button>
-	</form><br><a href='/'>Back</a>}
-=end
+
 end
 
 post '/signup' do
@@ -163,15 +148,13 @@ get '/list' do
 	#result = apply block to every element in telefonbuch & join elements with break in between
 	result = telefonbuch.map { |document| "<a href='delete?id=#{document['_id']}'>Delete</a>||<a href='update?id=#{document['_id']}'>Update</a>||#{document['nachname']}, #{document['vorname']}, #{document['nummer']} " }.join("<br>")
 	#Adds link to get '/new'
-	result = result + %{<br><br><a href="new">New Entry</a><br><br><form method = "post" action ="search">
-	<input name="tosearch" type="text" placeholder="Search"></input>
-	<button>Go search!</button>
-	<br><br><a href="/logout">Logout</a><br><br><a href='/deleteaccount'>Delete Account</a></form>}
+	result = result + "#{erb :list}"
 	#returns the result
 	result
 	else
 		"You´re logged out!<br><a href='/'>Login</a>"
 	end
+
 end
 
 get '/logout' do
@@ -397,3 +380,5 @@ post '/deleteaccount' do
  	end
 
 end
+
+
