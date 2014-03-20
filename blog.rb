@@ -36,7 +36,7 @@ post '/login' do
     users = db['users'].find( { :nickname => nickname } ).to_a
     #if it doesn´t exist gives user not found
     if users.size == 0
-    	return "User not found<br><a href='login'>Login</a>"
+    	return "#{erb :usernotfoundlogin}"
     end
     #pick up user
     user = users[0]
@@ -60,7 +60,7 @@ post '/login' do
  	if hash == savedHash
  		redirect "/list"
  	else
- 		"Wrong password!<br><a href='login'>Login</a>"
+ 		"#{erb :wrongpasswordlogin}"
  	end
 
 end
@@ -94,11 +94,11 @@ post '/signup' do
 		#what pops up if nickname and password aren´t filled in
 	   	if ((nickname != "") && (password != "")) != true
 
-	 		"Please fill in all required fields!<br><a href='signup'>Signup</a>"
+	 		"#{erb :pleasefillinsignup}"
 	 	#nickname already in the database	
 	   	elsif user.size > 0
 		   	
-		   	"Please choose another Nickname!<br><a href='signup'>Signup</a>"
+		   	"#{erb :pleasechooseanothersignup}"
 		#not in the database yet nick and password are there  	
    		else (user.size <= 0) && ((nickname != "") && (password != ""))
 	 		#generate salt
@@ -120,7 +120,7 @@ post '/signup' do
 	   		#debug
 	   		puts user
 	   		#successful entry message
-	   		"Successfully signed up! You did great why don´t you get some #{favfood} or watch some #{favseries}?<br><a href='login'>Login</a>"
+	   		"#{erb :successfullysignedup}"
 	   	end
 
 end
@@ -152,7 +152,7 @@ get '/list' do
 	#returns the result
 	result
 	else
-		"You´re logged out!<br><a href='/'>Login</a>"
+		"#{erb :youreloggedoutlist}"
 	end
 
 end
@@ -196,7 +196,7 @@ post '/search' do
 
 			else
 				#if there are no entries display this message
-				"Sorry, no entries found!"
+				"#{erb :sorrynoentries}"
 			end
 		
 		end
@@ -272,12 +272,7 @@ get '/update' do
 	puts "#{vorname}"
 	puts "#{nachname}"
 	#form that contains current names and sends ID to post '/update'
-	 %{<form method="post" action="update?id=#{id}">
-		<input name="vorname" type="text" placeholder="First name" value="#{vorname}" required pattern="[A-Za-z\s]+"></input><br>
-		<input name="nachname" type="text" placeholder="Last name" value="#{nachname}" required pattern="[A-Za-z\s]+""></input><br>
-		<input name="nummer" type="text" placeholder="Phone number" value="#{nummer}" required pattern="[0-9]+"></input><br>
-		<button>Save</button>
-	</form>}
+	 "#{erb :update}"
 
 end
 
