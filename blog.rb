@@ -207,15 +207,9 @@ end
 
 #Opens form to fill in names 
 get '/new' do
-	
+	erb :new
 	#renders our form in html and sends it to post '/new'
-	'<form method="post" action="new">
-		<input name="vorname" type="text" placeholder="First name" required pattern="[A-Za-z\s]+"></input><br>
-		<input name="nachname" type="text" placeholder="Last name" required pattern="[A-Za-z\s]+"></input><br>
-		<input name="nummer"  type="text" placeholder="Phone number" pattern="[0-9]+" required></input>
-		<button>Save</button>
-	</form>'
-
+	
 end
 
 #Adds new user to database and confirms it
