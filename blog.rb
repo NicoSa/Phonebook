@@ -146,7 +146,7 @@ get '/list' do
 	#reads collection 'namen' & transforms into array
 	telefonbuch = db["#{session[:user_id]}"].find.sort(:nachname => :asc).to_a
 	#result = apply block to every element in telefonbuch & join elements with break in between
-	result = telefonbuch.map { |document| "<a href='delete?id=#{document['_id']}'>Delete</a>||<a href='update?id=#{document['_id']}'>Update</a>||#{document['nachname']}, #{document['vorname']}, #{document['nummer']} " }.join("<br>")
+	result = telefonbuch.map { |document| "<a href='delete?id=#{document['_id']}'>Delete</a><a href='update?id=#{document['_id']}'>Update</a> #{document['nachname']}, #{document['vorname']}, #{document['nummer']} " }.join("<br>")
 	#Adds link to get '/new'
 	result = result + "#{erb :list}"
 	#returns the result

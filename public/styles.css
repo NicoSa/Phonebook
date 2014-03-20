@@ -1,7 +1,7 @@
 body
 {
 background-color:#EEEEEE;
-
+font-family:"Verdana", Verdana, sans-serif;
 }
 
 h1
@@ -96,7 +96,7 @@ a:active, button:active {
     text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
     }
 
-form.form-container {
+form {
    border: 0px solid #ffffff;
    background: #c4c4c4;
    background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#c4c4c4));
@@ -118,7 +118,7 @@ form.form-container {
    padding:20px;
    width:300px;
    }
-form.form-field {
+input {
    border: 1px solid #000000;
    background: #ffffff;
    -webkit-border-radius: 4px;
@@ -148,11 +148,11 @@ form.form-title {
    color: #000000;
    text-shadow: #f0f0f0 0 1px 0;
    }
-form.submit-container {
+.submit-container {
    margin:8px 0;
    text-align:right;
    }
-form.submit-button {
+.submit-button {
    border: 1px solid #ffffff;
    background: #949494;
    background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#949494));
@@ -175,7 +175,7 @@ form.submit-button {
    text-decoration: none;
    vertical-align: middle;
    }
-form.submit-button:hover {
+.submit-button:hover {
    border: 1px solid #ffffff;
    text-shadow: #ffffff 0 1px 0;
    background: #e8e8e8;
@@ -187,7 +187,7 @@ form.submit-button:hover {
    background-image: -ms-linear-gradient(top, #b5b5b5 0%, #e8e8e8 100%);
    color: #000000;
    }
-form.submit-button:active {
+.submit-button:active {
    text-shadow: #ffffff 0 1px 0;
    border: 1px solid #447314;
    background: #9e9e9e;
