@@ -1,3 +1,18 @@
+<% if defined?(allfilledin) %>
+		<script>alert("<%= allfilledin %>");
+		location = "/list";
+		</script>
+<% end %>
+<% if defined?(fillinall) %>
+        <script>alert("<%= fillinall %>");
+        location = "/update?id=<%= id %>";
+        </script>
+<% end %>
+<% if defined?(wrongformat) %>
+        <script>alert("<%= wrongformat %>");
+        location = "/update?id=<%= id %>";
+        </script>
+<% end %>
 <form method="post" action="update?id=<%= id %>">
 		<input name="vorname" type="text" placeholder="First name" value="<%= vorname %>" required pattern="[A-Za-z\s]+"></input><br>
 		<input name="nachname" type="text" placeholder="Last name" value="<%= nachname %>" required pattern="[A-Za-z\s]+"></input>

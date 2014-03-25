@@ -6,6 +6,7 @@ require 'uri'
 require 'digest'
 require 'securerandom'
 
+
 enable :sessions
 
 
@@ -225,15 +226,14 @@ post '/new' do
 		     puts "#{params}"
 		     #feed collection namen inside database with the values passed from get '/new' via params
 		     db["#{session[:user_id]}"].insert( { :vorname=> vorname.downcase.split(" ").map(&:capitalize).join(" "), :nachname=> nachname.downcase.split(" ").map(&:capitalize).join(" "), :nummer => nummer } )
-		     "#{nachname}, #{vorname},#{nummer} have been added! <a href='new' >New Entry</a> <a href='/list'>All</a> "
+		     erb :new, :locals => { :allfilledin => "Entry was made!"}
 	 	#if a field is not filled
 	 	elsif ((vorname != "") && (nachname != "") && (nummer != "")) != true
-
-	 		"Please fill in all required fields! <a href='new'>New Entry</a>"
+	 		erb :new, :locals => { :fillinall => "Please fill in all required fields!"}
+	 		
 		#if there are no numbers in the number field
 	 	else nummer.match(/[0-9]+/) != true
-
-			"Wrong format! Please enter digits for a Phone number and letters for your name! <a href='new'>New Entry</a>"
+	 		erb :new, :locals => { :wrongformat => "Please enter digits for phone number and letters for your name!"}
 		end
 
 end
@@ -248,7 +248,7 @@ get '/delete' do
     #removes entry with that id from database
 	db["#{session[:user_id]}"].remove( { :_id=> BSON::ObjectId.from_string(id) } )
 	#confirms removal and provides links to get '/new' and get '/'
-     "Entry was removed! <a href='new'>New Entry</a> <a href='/list'>All</a> "
+    erb :delete
 
 end
 
@@ -300,13 +300,11 @@ post '/update' do
 			#save new entries from person hash to database
 			db["#{session[:user_id]}"].save(person)
 			#updated message
-		     "#{nachname}, #{vorname},#{nummer} has been updated! <a href='new'>New</a> <a href='/list'>All</a> "
+		    erb :update, :locals => { :allfilledin => "Entry was made!", :nachname => nachname, :vorname => vorname, :nummer => nummer, :id => id}
 	 	elsif ((vorname != "") && (nachname != "") && (nummer != "")) != true
-
-	 		"Please fill in all required fields! <a href='new'>New Entry</a>"
+			erb :update, :locals => { :fillinall => "Please fill in all required fields!", :nachname => nachname, :vorname => vorname, :nummer => nummer, :id => id}
 	 	else nummer.match(/[0-9]+/) != true
-
-			"Wrong format! Please enter digits for a Phone number and letters for your name! <a href='new'>New Entry</a>"	 	
+	 		erb :update, :locals => { :wrongformat => "Please enter digits for phone number and letters for your name!", :nachname => nachname, :vorname => vorname, :nummer => nummer, :id => id}	 	
 		end
 
 end
