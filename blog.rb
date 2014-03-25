@@ -328,10 +328,7 @@ get '/deleteaccount' do
 	nickname = person["nickname"]
 
 	#password and delete form
-	%{If you really want to delete your account #{nickname}, please type your password and press delete!<br><br><form method = "post" action ="deleteaccount">
-	<input name="password" type="password" placeholder="Password" required maxlength="12"></input><br>
-	<button>Delete!</button>
-	</form>}
+	erb :deleteaccount, :locals => { :nickname => nickname }
 
 
 

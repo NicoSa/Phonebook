@@ -1,0 +1,15 @@
+<% if defined?(deleteall) %>
+		<script>alert("<%= deleteall %>");
+		location = "/";
+		</script>
+<% end %>
+<% if defined?(wrongpw) %>
+        <script>alert("<%= wrongpw %>");
+        location = "/deleteaccount";
+        </script>
+<% end %>
+
+If you really want to delete your account <%= "#{nickname}" %>, please type your password and press delete!<br><br><form method = "post" action ="deleteaccount">
+	<input name="password" type="password" placeholder="Password" required maxlength="12"></input><br>
+	<button>Delete!</button>
+	</form>
