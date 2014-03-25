@@ -352,15 +352,15 @@ post '/deleteaccount' do
    	puts hash
    	#our saved hash
  	savedHash = user["password"]
+ 	nickname = user["nickname"]
  	#if correct password was entered, delete user and his database
  	if hash == savedHash
 
  		db['users'].remove( { :_id=> BSON::ObjectId.from_string("#{session[:user_id]}") } )
  		db["#{session[:user_id]}"].drop()
-		"Deleted your account!<br><a href='/'>Byebye</a>"
+		erb :deleteaccount, :locals => {:message=>"Deleted your account!", :nickname => nickname}
  	else
- 		
- 		"Wrong password!<br><a href='deleteaccount'>Back</a>"
+ 		erb :deleteaccount, :locals => {:fuck=>"Wrong password!", :nickname => nickname}
  	end
 
 end
