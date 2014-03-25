@@ -1,4 +1,9 @@
-<br><br><a href="new">New Entry</a><br><br><form method = "post" action ="search">
+<% if defined?(urloggedout) %>
+        <script>
+        alert("<%= urloggedout %>");
+        location = "/";
+        </script>
+<% end %><br><br><a href="new">New Entry</a><br><br><form method = "post" action ="search">
 	<div id="searchbox"><input name="tosearch" type="text" placeholder="Search"></div></input>
 	<button>Go search!</button>
 	<br><br><a href="/logout">Logout</a><br><br><div id="deleteaccount"><a href='/deleteaccount'>Delete Account</a></div></form>

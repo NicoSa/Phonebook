@@ -1,3 +1,15 @@
+<% if defined?(fillin) %>
+        <script>alert("<%= fillin %>");</script>
+    <% end %>
+<% if defined?(nametaken) %>
+        <script>alert("<%= nametaken %>");</script>
+    <% end %>
+<% if defined?(signedup) %>
+        <script>
+        alert("<%= signedup %>");
+        location = "/login";
+        </script>
+<% end %>
 <h1>Signup</h1><form method = "post" action ="signup">
 	<input name="nickname" type="text" placeholder="Nickname" required maxlength="12"></input><br>
 	<input name="password" type="password" placeholder="Password" required maxlength="12"></input><br>

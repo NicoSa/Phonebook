@@ -36,7 +36,7 @@ post '/login' do
     users = db['users'].find( { :nickname => nickname } ).to_a
     #if it doesn´t exist gives user not found
     if users.size == 0
-    	return "#{erb :usernotfoundlogin}"
+    	return erb :login, :locals => { :notfound => "User not found. Please try again." }
     end
     #pick up user
     user = users[0]
@@ -60,7 +60,7 @@ post '/login' do
  	if hash == savedHash
  		redirect "/list"
  	else
- 		"#{erb :wrongpasswordlogin}"
+ 		erb :login, :locals => { :wrongpassword => "Wrong password! Please try again."}
  	end
 
 end
@@ -94,11 +94,11 @@ post '/signup' do
 		#what pops up if nickname and password aren´t filled in
 	   	if ((nickname != "") && (password != "")) != true
 
-	 		"#{erb :pleasefillinsignup}"
+	 		erb :signup, :locals => { :fillin => "Please fill in all required fields!"}
 	 	#nickname already in the database	
 	   	elsif user.size > 0
 		   	
-		   	"#{erb :pleasechooseanothersignup}"
+		   	erb :signup, :locals => { :nametaken => "Your username is already taken. Please choose a different one!"}
 		#not in the database yet nick and password are there  	
    		else (user.size <= 0) && ((nickname != "") && (password != ""))
 	 		#generate salt
@@ -120,8 +120,8 @@ post '/signup' do
 	   		#debug
 	   		puts user
 	   		#successful entry message
-	   		"#{erb :successfullysignedup}"
-	   	end
+	   		erb :signup, :locals => { :signedup => "You signed up, go ahead and login!"}
+		end
 
 end
 
@@ -152,7 +152,7 @@ get '/list' do
 	#returns the result
 	result
 	else
-		"#{erb :youreloggedoutlist}"
+		erb :list, :locals => { :urloggedout => "Sorry but you are logged out!"}
 	end
 
 end
@@ -196,7 +196,7 @@ post '/search' do
 
 			else
 				#if there are no entries display this message
-				"#{erb :sorrynoentries}"
+				"Sorry, no entries found!"
 			end
 		
 		end
@@ -272,7 +272,7 @@ get '/update' do
 	puts "#{vorname}"
 	puts "#{nachname}"
 	#form that contains current names and sends ID to post '/update'
-	 "#{erb :update}"
+	erb :update, :locals => { :nachname => nachname, :vorname => vorname, :nummer => nummer, :id => id}
 
 end
 
