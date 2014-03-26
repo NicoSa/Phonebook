@@ -1,9 +1,11 @@
 <center>
     <% if defined?(notfound) %>
         <script>alert("<%= notfound %>");</script>
+        <noscript>This User does not exist!</noscript>
     <% end %>
     <% if defined?(wrongpassword) %>
         <script>alert("<%= wrongpassword %>");</script>
+        <noscript>You typed the wrong password!</noscript>
     <% end %>
     <h1>Login</h1>
     <form method = "post" action ="login">

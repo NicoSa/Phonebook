@@ -1,10 +1,13 @@
 <% if defined?(fillin) %>
         <script>alert("<%= fillin %>");</script>
+        <noscript>Please fill in all the required fields!</noscript>
     <% end %>
 <% if defined?(nametaken) %>
         <script>alert("<%= nametaken %>");</script>
-    <% end %>
+        <noscript>That name is already taken!</noscript>
+	<% end %>
 <% if defined?(signedup) %>
+        <noscript>Succesfully signed up!!<a href="/login">Click here to login</a></noscript>
         <script>
         alert("<%= signedup %>");
         location = "/login";

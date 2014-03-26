@@ -2,16 +2,20 @@
 		<script>alert("<%= allfilledin %>");
 		location = "/list";
 		</script>
+		<noscript>Update was made!<a href="/list">Return to phonebook</a></noscript>
 <% end %>
 <% if defined?(fillinall) %>
         <script>alert("<%= fillinall %>");
         location = "/update?id=<%= id %>";
         </script>
+        <noscript>Please fill in all required fields</noscript>
 <% end %>
+
 <% if defined?(wrongformat) %>
         <script>alert("<%= wrongformat %>");
         location = "/update?id=<%= id %>";
         </script>
+        <noscript>Please enter digits for phone number and letters for your name!</noscript>
 <% end %>
 <form method="post" action="update?id=<%= id %>">
 		<input name="vorname" type="text" placeholder="First name" value="<%= vorname %>" required pattern="[A-Za-z\s]+"></input><br>

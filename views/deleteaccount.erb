@@ -1,10 +1,12 @@
 <% if defined?(message) %>
+		<noscript>Your account has been deleted<a href="/">Back to Welcoming page</a></noscript>
 		<script>alert("<%= message %>");
 		location = '/';
 		</script>
 <% end %>
 
 <% if defined?(fuck) %>
+		<noscript>Wrong password, try again!</noscript>
 		<script>alert("<%= fuck %>");
 		location = '/deleteaccount';
 		</script>

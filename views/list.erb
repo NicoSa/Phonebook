@@ -1,4 +1,5 @@
 <% if defined?(urloggedout) %>
+		<noscript>Sorry but you are logged out <a href="/login">Please click here to login</a></noscript>
         <script>
         alert("<%= urloggedout %>");
         location = "/";
