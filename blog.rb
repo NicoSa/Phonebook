@@ -202,7 +202,7 @@ post '/search' do
 		
 		end
 	#What´s gonna be on the search result screen
-	"Number of entries found: #{entrysize}<br><br>#{found}<a href='/list'>Back</a>"
+	erb :search, :locals => { :entrysize => entrysize, :found => found}
 
 end
 
@@ -300,7 +300,7 @@ post '/update' do
 			#save new entries from person hash to database
 			db["#{session[:user_id]}"].save(person)
 			#updated message
-		    erb :update, :locals => { :allfilledin => "Entry was made!", :nachname => nachname, :vorname => vorname, :nummer => nummer, :id => id}
+		    erb :update, :locals => { :allfilledin => "Entry updated!", :nachname => nachname, :vorname => vorname, :nummer => nummer, :id => id}
 	 	elsif ((vorname != "") && (nachname != "") && (nummer != "")) != true
 			erb :update, :locals => { :fillinall => "Please fill in all required fields!", :nachname => nachname, :vorname => vorname, :nummer => nummer, :id => id}
 	 	else nummer.match(/[0-9]+/) != true
