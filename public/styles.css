@@ -87,7 +87,8 @@ a:active, button:active {
     }
 
 #searchbox input[type="text"]:focus {
-    background:  no-repeat 10px 6px #fcfcfc;
+	outline: 0;
+    background:  none !important;
     color: #6a6f75;
     width: 200px;
     -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(0, 0, 0, 0.9) inset;
