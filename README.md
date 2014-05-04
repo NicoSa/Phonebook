@@ -1,4 +1,4 @@
-### Welcome to my Phonebook app
+Welcome to my Phonebook app
 ===
 
 Hi, this is a little program I was fiddling around with before starting at Makers Academy to learn some basics in  Sinatra, Ruby, MongoDB, HTML, CSS and even a little bit Javascript.
