@@ -1,15 +1,32 @@
 Welcome to my Phonebook app
 ===
+This is an app I was fiddling around with before starting at Makers Academy.
+![](phonebook.png)
 
-Hi, this is a little program I was fiddling around with before starting at Makers Academy to learn some basics in  Sinatra, Ruby, MongoDB, HTML, CSS and even a little bit Javascript.
-
-It´s basically a phonebook. You can create an account, create/read/update/delete entries and search through them. You can also delete your account.
-
-You will however need a Mongo Database to run tests on this.
-
+Heroku
+----
 [App on Heroku]
-[App on Heroku]:http://telefonbuch.heroku.com
-===
 
-Click for [Everything you need to know about me]!
-[Everything you need to know about me]:http://www.nicosaueressig.de
+Objectives of exercise
+----
+Playing around to get to grips with how view, models and controllers work together. Having fun and learning at the same time.
+
+Technologies used
+----
+- Ruby
+- Sinatra
+- Javascript
+- HTML5
+- CSS3
+- Git
+- Heroku
+- MongoDB
+
+How to run it
+----
+```sh
+git clone https://github.com/NicoSa/Phonebook
+cd phonebook
+start.sh
+```
+[App on Heroku]:http://telefonbuch.heroku.com
